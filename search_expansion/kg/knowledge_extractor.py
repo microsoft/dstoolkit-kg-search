@@ -51,7 +51,7 @@ class UMLSKnowledgeExtractor(KnowledgeExtractor):
             The set of relevant entities in dictionary.
 
         """
-        query = f"g.V().haslabel('disease').has('name', '{disease_name}').out('is subclass of').values('name')"
+        query = f"g.V().haslabel('disease').has('name', '{disease_name}').in('is subclass of').values('name')"
 
         logger.debug(f"Gremlin Query: {query}")
     
@@ -82,7 +82,7 @@ class UMLSKnowledgeExtractor(KnowledgeExtractor):
             The set of relevant entities in dictionary.
 
         """
-        query = f"g.V().haslabel('disease').has('name', '{disease_name}').in('is subclass of').values('name')"
+        query = f"g.V().haslabel('disease').has('name', '{disease_name}').out('is subclass of').values('name')"
 
         logger.debug(f"Gremlin Query: {query}")
     
