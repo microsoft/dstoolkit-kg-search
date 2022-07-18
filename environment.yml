@@ -1,0 +1,45 @@
+name: kg-search-ip
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2021.10.26=haa95532_4
+  - certifi=2021.10.8=py38haa95532_2
+  - openssl=1.1.1m=h2bbff1b_0
+  - pip=21.2.2=py38haa95532_0
+  - python=3.8.12=h6244533_0
+  - setuptools=58.0.4=py38haa95532_0
+  - sqlite=3.37.2=h2bbff1b_0
+  - vc=14.2=h21ff451_1
+  - vs2015_runtime=14.27.29016=h5e58377_2
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - wincertstore=0.2=py38haa95532_2
+  - pip:
+    - aenum==1.4.5
+    - aiohttp==3.8.1
+    - aiosignal==1.2.0
+    - async-timeout==4.0.2
+    - asyncio==3.4.3
+    - attrs==21.4.0
+    - azure-common==1.1.28
+    - azure-core==1.22.1
+    - azure-search-documents==11.2.1
+    - charset-normalizer==2.0.12
+    - coverage==6.3.2
+    - frozenlist==1.3.0
+    - gremlinpython==3.4.8
+    - idna==3.3
+    - isodate==0.6.1
+    - msrest==0.6.21
+    - multidict==6.0.2
+    - nest-asyncio==1.5.4
+    - nose2==0.11.0
+    - oauthlib==3.2.0
+    - python-dotenv==0.19.2
+    - requests==2.27.1
+    - requests-oauthlib==1.3.1
+    - six==1.11.0
+    - tornado==4.4.1
+    - typing-extensions==4.1.1
+    - urllib3==1.26.8
+    - yarl==1.7.2
+prefix: C:\Users\zhih\Anaconda3\envs\search-expansion
