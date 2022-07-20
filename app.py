@@ -8,7 +8,7 @@ def test():
    payload = request.get_json()
 
    if payload:
-       print(f'Requested Json: {payload}')
+       print(f'The requested Json is: {payload}')
        return payload
    else:
        print('Request for test page received with json body')
