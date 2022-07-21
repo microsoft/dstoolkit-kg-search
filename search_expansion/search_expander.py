@@ -121,7 +121,7 @@ class UMLSSearchExpander(SearchExpander):
 
         code, results = self.search_client.advanced_search(payload)
 
-        return code, results
+        return results, code 
 
     def expand(self, search_text="*", parameters=None):
         """Entry function to perform query expansion, submision to ACS and 
@@ -182,7 +182,7 @@ class UMLSSearchExpander(SearchExpander):
         start_time = time.time()
         logger.info("********** Submit the rewritten query **********")
         logger.info("--------------------------------------------------")
-        code, initial_results = self.search(rewritten_query)
+        initial_results, code = self.search(rewritten_query, parameters)
         
 
         logger.info("********** Postprocess the search result **********")
@@ -190,7 +190,7 @@ class UMLSSearchExpander(SearchExpander):
         postprocessed_result = self.postprocessor.postprocess(initial_results, expanded)
         logger.info(f"Time for Final Result: {time.time() - start_time} seconds")
 
-        return postprocessed_result
+        return postprocessed_result, code 
 
 
 if __name__ == '__main__':
