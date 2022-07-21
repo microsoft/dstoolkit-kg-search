@@ -9,7 +9,7 @@ import enum
 import sys
 import re
 import logging
-import search_expansion.util as util
+import api.search_expansion.util as util
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 import unittest
 import os
-import search_expansion.util as util
-from search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
+import api.search_expansion.util as util
+from api.search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
 
 import logging
 logging.basicConfig()

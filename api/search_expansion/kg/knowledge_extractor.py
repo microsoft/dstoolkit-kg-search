@@ -4,9 +4,9 @@ This module provides functions extract relevant entity from Knowledge Graph.
 
 
 """
-from search_expansion.kg.graph_db import CosmosDBClient
+from api.search_expansion.kg.graph_db import CosmosDBClient
 import logging
-import search_expansion.util as util
+import api.search_expansion.util as util
 
 logger = logging.getLogger(__name__)
 

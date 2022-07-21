@@ -1,7 +1,10 @@
 from datetime import datetime
 from flask import Flask, request
 import os
-from search_expansion.search_expander import UMLSSearchExpander
+import sys
+from api.search_expansion.search_expander import UMLSSearchExpander
+
+# sys.path.append('../')
 
 app = Flask(__name__)
 

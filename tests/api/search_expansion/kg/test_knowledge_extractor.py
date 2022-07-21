@@ -1,6 +1,6 @@
 import unittest
 import os
-from search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
+from api.search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
 from dotenv import load_dotenv
 import uuid
 import time

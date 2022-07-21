@@ -1,7 +1,7 @@
 import unittest
 import os
 import time
-from search_expansion.search_expander import UMLSSearchExpander
+from api.search_expansion.search_expander import UMLSSearchExpander
 
 import logging
 logging.basicConfig()
@@ -30,7 +30,7 @@ class SearchExpanderTest(unittest.TestCase):
         search_list = ["keratoconus treatment"]
 
         for query in search_list:
-            code, result = SearchExpanderTest.search_expander.search(query)
+            result, code = SearchExpanderTest.search_expander.search(query)
             
             print(f"Result for query: {query}")
             # print(result)
@@ -44,7 +44,7 @@ class SearchExpanderTest(unittest.TestCase):
         search_text = "keratoconus treatment"
 
         start_time = time.time()
-        result = SearchExpanderTest.search_expander.expand(search_text)
+        result, code = SearchExpanderTest.search_expander.expand(search_text)
         print(f"Execution time: {time.time() - start_time} second")
 
         print(f"Result for query: {search_text}")

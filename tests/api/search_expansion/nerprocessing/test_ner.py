@@ -1,7 +1,7 @@
 import unittest
 import os
-from search_expansion.nerprocessing.ner import UMLSNer
-from search_expansion.preprocessing.preprocessor import UMLSPreProcessor
+from api.search_expansion.nerprocessing.ner import UMLSNer
+from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
 from dotenv import load_dotenv
 import uuid
 import time

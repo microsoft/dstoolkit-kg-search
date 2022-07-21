@@ -1,6 +1,6 @@
 import unittest
 import os
-from search_expansion.kg.graph_db import CosmosDBClient
+from api.search_expansion.kg.graph_db import CosmosDBClient
 from dotenv import load_dotenv
 import uuid
 import time

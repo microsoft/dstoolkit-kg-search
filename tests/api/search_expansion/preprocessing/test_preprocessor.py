@@ -1,7 +1,7 @@
 import unittest
 import os
 import time
-from search_expansion.preprocessing.preprocessor import UMLSPreProcessor
+from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
 
 import logging
 logging.basicConfig()

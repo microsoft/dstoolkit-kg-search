@@ -3,7 +3,7 @@ import os
 import json
 import time
 from dotenv import load_dotenv
-from search_expansion.search_sdk import SearchSDK
+from api.search_expansion.search_sdk import SearchSDK
 
 import logging
 logging.basicConfig()

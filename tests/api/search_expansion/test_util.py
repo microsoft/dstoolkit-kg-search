@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 import time
-from search_expansion.util import *
+from api.search_expansion.util import *
 
 import logging
 logging.basicConfig()

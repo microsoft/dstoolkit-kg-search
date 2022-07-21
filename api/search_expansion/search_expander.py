@@ -13,12 +13,12 @@ from dotenv import load_dotenv
 
 sys.path.append('../')
 
-from search_expansion.preprocessing.preprocessor import UMLSPreProcessor
-from search_expansion.nerprocessing.ner import UMLSNer
-from search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
-from search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
-from search_expansion.postprocessing.postprocessor import UMLSPostProcessor
-from search_expansion.search_sdk import SearchSDK
+from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
+from api.search_expansion.nerprocessing.ner import UMLSNer
+from api.search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
+from api.search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
+from api.search_expansion.postprocessing.postprocessor import UMLSPostProcessor
+from api.search_expansion.search_sdk import SearchSDK
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
