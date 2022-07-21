@@ -4,8 +4,6 @@ import os
 import sys
 from api.search_expansion.search_expander import UMLSSearchExpander
 
-# sys.path.append('../')
-
 app = Flask(__name__)
 
 search_expander = UMLSSearchExpander()
@@ -41,5 +39,5 @@ def search():
         return "Body is none", 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
