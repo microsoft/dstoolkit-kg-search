@@ -2,7 +2,6 @@
     aiohttp==3.8.1
     aiosignal==1.2.0
     async-timeout==4.0.2
-    asyncio==3.4.3
     attrs==21.4.0
     azure-common==1.1.28
     azure-core==1.22.1
