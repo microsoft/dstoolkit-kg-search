@@ -75,8 +75,6 @@ class UMLSSearchExpander(SearchExpander):
         if 'COSMOS_DB_PASSWORD' in os.environ:
             self.knowledge_extractor_config['password'] = os.environ['COSMOS_DB_PASSWORD']
 
-        logger.info(f"Cosmos Configuration: {self.knowledge_extractor_config}")
-
         self.knowledge_extractor = UMLSKnowledgeExtractor(self.knowledge_extractor_config)
 
         # Initialize the query rewriter
