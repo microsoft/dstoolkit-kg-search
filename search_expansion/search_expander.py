@@ -70,7 +70,7 @@ class UMLSSearchExpander(SearchExpander):
         self.knowledge_extractor_config['password'] = os.environ['COSMOS_DB_PASSWORD']
         self.knowledge_extractor = UMLSKnowledgeExtractor(self.knowledge_extractor_config)
 
-        print(f"Cosmos Configuration: {self.knowledge_extractor_config}")
+        logger.info(f"Cosmos Configuration: {self.knowledge_extractor_config}")
 
         # Initialize the query rewriter
         self.rewriter_config = {}
@@ -83,7 +83,7 @@ class UMLSSearchExpander(SearchExpander):
         self.acs_config['index_name'] = os.environ['ACS_INDEX_NAME']
         self.acs_config['api_version'] = os.environ['ACS_API_VERSION']
 
-        print(f"ACS Configuration: {self.acs_config}")
+        logger.info(f"ACS Configuration: {self.acs_config}")
 
         self.search_client = SearchSDK(self.acs_config)
 
