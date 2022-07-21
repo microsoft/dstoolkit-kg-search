@@ -58,16 +58,22 @@ class UMLSSearchExpander(SearchExpander):
         
         # Initialize the NER processor
         self.ner_config = {}
-        self.ner_config['endpoint'] = os.environ['NER_ENDPOINT']
-        self.ner_config['token'] = os.environ['NER_BEAR_TOKEN']
+        if 'NER_ENDPOINT' in os.environ:
+            self.ner_config['endpoint'] = os.environ['NER_ENDPOINT']
+        if 'NER_BEAR_TOKEN' in os.environ:
+            self.ner_config['token'] = os.environ['NER_BEAR_TOKEN']
         self.ner = UMLSNer(self.ner_config)
 
         # Initialize the knowledge extractor
         self.knowledge_extractor_config = {}
-        self.knowledge_extractor_config['server'] = os.environ['COSMOS_DB_SERVER']
-        self.knowledge_extractor_config['db'] = os.environ['COSMOS_DB_DATABASE']
-        self.knowledge_extractor_config['graph'] = os.environ['COSMOS_DB_GRAPH']
-        self.knowledge_extractor_config['password'] = os.environ['COSMOS_DB_PASSWORD']
+        if 'COSMOS_DB_SERVER' in os.environ:
+            self.knowledge_extractor_config['server'] = os.environ['COSMOS_DB_SERVER']
+        if 'COSMOS_DB_DATABASE' in os.environ:
+            self.knowledge_extractor_config['db'] = os.environ['COSMOS_DB_DATABASE']
+        if 'COSMOS_DB_GRAPH' in os.environ:
+            self.knowledge_extractor_config['graph'] = os.environ['COSMOS_DB_GRAPH']
+        if 'COSMOS_DB_PASSWORD' in os.environ:
+            self.knowledge_extractor_config['password'] = os.environ['COSMOS_DB_PASSWORD']
         self.knowledge_extractor = UMLSKnowledgeExtractor(self.knowledge_extractor_config)
 
         logger.info(f"Cosmos Configuration: {self.knowledge_extractor_config}")
@@ -78,10 +84,14 @@ class UMLSSearchExpander(SearchExpander):
 
         # Initialize the search engine configuration
         self.acs_config = {}
-        self.acs_config['endpoint'] = os.environ['ACS_ENDPOINT']
-        self.acs_config['api_key'] = os.environ['ACS_API_KEY']
-        self.acs_config['index_name'] = os.environ['ACS_INDEX_NAME']
-        self.acs_config['api_version'] = os.environ['ACS_API_VERSION']
+        if 'ACS_ENDPOINT' in os.environ:
+            self.acs_config['endpoint'] = os.environ['ACS_ENDPOINT']
+        if 'ACS_API_KEY' in os.environ:
+            self.acs_config['api_key'] = os.environ['ACS_API_KEY']
+        if 'ACS_INDEX_NAME' in os.environ:
+            self.acs_config['index_name'] = os.environ['ACS_INDEX_NAME']
+        if 'ACS_API_VERSION' in os.environ:
+            self.acs_config['api_version'] = os.environ['ACS_API_VERSION']
 
         logger.info(f"ACS Configuration: {self.acs_config}")
 
