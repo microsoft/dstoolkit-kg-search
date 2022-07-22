@@ -1,0 +1,260 @@
+:root {
+  --theme-black: #111;
+  --theme-background: #e9ecf0;
+  --sidebar-width: 300px;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+
+.btn-light {
+  background-color: #fff !important;
+  border-color: #ccc !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: var(--theme-background);
+  font-family: 'Roboto Condensed', sans-serif;
+}
+a {
+  text-decoration: none;
+}
+.invisible {
+  visibility: hidden;
+}
+.hide {
+  display: none;
+}
+.blue {
+  background-color:  blue;
+}
+.red {
+  background-color:  red;
+}
+.yellow {
+  background-color:  yellow;
+}
+.pointer {
+  cursor: pointer;
+}
+.pointer_disabled {
+  cursor: not-allowed !important; 
+}
+.text-xs {
+  font-size: 0.8rem;
+}
+.text-xxs {
+  font-size: 0.6rem;
+}
+.text-s {
+  font-size: 1rem;
+}
+.text-m {
+  font-size: 1.2rem;
+}
+.text-l {
+  font-size: 1.4rem;
+}
+.h-right {
+  align-items: flex-end;
+  text-align: right;
+}
+.h-center {
+  margin: 0 auto;
+  text-align: center;
+  justify-content: center;
+  display: block;
+}
+.v-center {
+  display: flex;
+  align-items: center;
+}
+.zoom {
+  transition: transform .4s; /* Animation */
+}
+.zoom:hover {
+  transform: scale(1.01);
+}
+
+/* Custom Modal Size */
+.modal-large-fluid {
+  max-width: inherit;
+  width: 70%;
+}
+
+/* Side Nav Bar */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100%;
+  background-color: var(--theme-black);
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  padding: 0 10px 0;
+}
+.main-dish {
+  margin-left: var(--sidebar-width);
+  padding: 20px 40px 0;
+  height: 100%;
+}
+
+
+/* Top menu bar */
+.nav-menu-itme li {
+  padding: 0 1rem;
+}
+.globe-icon {
+  font-size: 1.5rem;
+}
+.logo {
+  margin: 0 50px;
+}
+.logo img {
+  width: 100px;
+  margin: 0 30px 0 0;
+}
+.nav-button {
+  padding: 5px 0;
+}
+.footer-logo {
+  width: 90px;
+}
+
+@media only screen and (max-width: 400px) {
+  .logo img {
+    width: 25px;
+    margin: 0 10px 0 0;
+    content: url('msft-white-icon-only.png') !important;
+  }
+  .logo {
+    margin: 0 30px;
+  }
+}
+
+/* Filter selector */
+.filters {
+  padding: 0.2rem 1rem;
+}
+
+/* Card Result */
+.card-videobox {
+  position: relative;
+  min-height: 150px;
+  height: 150px;
+}
+.card-play-button {
+  display: block;
+  position: absolute;
+  top: 2.7rem;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  color: rgba(2550,255,255,0.7);
+}
+.card-description {
+  line-height: 1rem;
+}
+
+
+/* Video JS */
+/* p {
+  background-color: #eee;
+  border: thin solid #777;
+  padding: 10px;
+} */
+ul#action-list{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ul#action-list li{
+  position: relative;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+ul#action-list li:last-child {
+  margin-bottom: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+ul#action-list li a{
+  display: block;
+  padding: 10px 15px;
+  color: #555;
+  text-decoration: none;
+}
+ul#action-list li a:hover {
+  color: #555;
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+
+ul#audio-list{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ul#audio-list li{
+  position: relative;
+  margin-bottom: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+ul#audio-list li:last-child {
+  margin-bottom: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+ul#audio-list li a{
+  display: block;
+  padding: 10px 15px;
+  color: #555;
+  text-decoration: none;
+}
+ul#audio-list li a:hover {
+  color: #555;
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+
+.list-group{
+  max-height: 300px;
+  -webkit-overflow-scrolling: touch;
+}
+
+ .defeat_label{
+     background-color: #dd5151 !important;
+ }
+ .knockdown_label {
+     background-color: #ffcd2b !important;
+ }
+
+/* Search Result*/
+.highlight {
+  background-color: rgb(255, 232, 100);
+  font-style: normal;
+}
+.pill-aqua {
+  background-color: rgb(176, 237, 248);
+}
+.pill-lightgray {
+  background-color: lightgray;
+}
+
+
+/* On small screens, set height to 'auto' for the grid */
+@media screen and (max-width: 768px) {
+  .main-dish {
+    margin-left: 0;
+  }
+}
