@@ -36,14 +36,10 @@ def search():
     
     # input data
     data = request.json
-
-    print(f"request data:{data}")
     
     kg_enabled = 1 if 'input_kg_check' in data.keys() and data['input_kg_check'] else 0
     input_keywords = data['input_keywords'] if 'input_keywords' in data.keys() and len(data['input_keywords'])>0 else '*'
     
-    print(f"kg enabled: {kg_enabled}")
-
     # advanced search
     query_schema = {  
         "count": True,
