@@ -35,7 +35,7 @@ class KnowledgeExtractor:
 class UMLSKnowledgeExtractor(KnowledgeExtractor):
     
     def __init__(self, config):
-        self.client = CosmosDBClient(config)
+        self.config = config
 
     def extract_hyponyms_disease(self, disease_name, query_api=util.QueryAPI.gremlin):
         """Extract the child class diseases of the user specified one.
@@ -133,7 +133,12 @@ class UMLSKnowledgeExtractor(KnowledgeExtractor):
             The set of relevant entities in dictionary.
 
         """
+        # TODO CosmosDB will close the connection automatically after being idle for 1 hour. 
+        # So we just simply create the connection all the time. 
+        # A better workaround is to implement some keep-alive logic.
 
+        self.client = CosmosDBClient(self.config)
+        
         disease_instance, disease_name = util.count_entities(ner_result)
 
         relevant_entities = {}
