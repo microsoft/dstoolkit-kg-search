@@ -50,7 +50,7 @@ def search():
         "highlight": "title, abstract, mesh_terms",
         "highlightPreTag": "<em class='highlight'>",
         "highlightPostTag": "</em>",
-        "searchMode": "any",  
+        "searchMode": "all",  
         "queryType": "simple",
         "skip": 0,
         "top": 50

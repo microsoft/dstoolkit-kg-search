@@ -33,8 +33,6 @@ class SearchSDK:
         self.token = content['access_token']
         self.token_expired_time = int(content['expires_on'])
 
-        print(content)
-
     def search(self, query_schema, kg_enabled=1):
         
         # current timestamp
