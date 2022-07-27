@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "528d3845-48dd-430f-a3fd-a54593b1b481",
+		"name": "create_acs_index",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2182677"
+	},
+	"item": [
+		{
+			"name": "1_create_datasource",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{datasource_name}}\",\r\n  \"description\": \"Ohsumed files in JSON format \",\r\n  \"type\": \"adlsgen2\",\r\n  \"subtype\": null,\r\n  \"credentials\": {\r\n    \"connectionString\": \"{{connection_string}}\"\r\n  },\r\n  \"container\": {\r\n    \"name\": \"{{container_name}}\",\r\n    \"query\": \"{{blob_folder}}\"\r\n  },\r\n  \"dataChangeDetectionPolicy\": null,\r\n  \"dataDeletionDetectionPolicy\": null,\r\n  \"encryptionKey\": null,\r\n  \"identity\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{service_name}}.search.windows.net/datasources?api-version=2021-04-30-Preview",
+					"protocol": "https",
+					"host": [
+						"{{service_name}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"datasources"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2021-04-30-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2_create_index",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{index_name}}\",\r\n  \"defaultScoringProfile\": \"\",\r\n  \"fields\": [\r\n    {\r\n      \"name\": \"medline_ui\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": false,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": true,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": null,\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"mesh_terms\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"title\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"publication_type\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"filterable\": true,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": true,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"abstract\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"author\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"source\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": \"en.microsoft\",\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    },\r\n    {\r\n      \"name\": \"metadata_storage_path\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": false,\r\n      \"filterable\": false,\r\n      \"retrievable\": true,\r\n      \"sortable\": false,\r\n      \"facetable\": false,\r\n      \"key\": false,\r\n      \"indexAnalyzer\": null,\r\n      \"searchAnalyzer\": null,\r\n      \"analyzer\": null,\r\n      \"normalizer\": null,\r\n      \"synonymMaps\": []\r\n    }\r\n  ],\r\n  \"scoringProfiles\": [],\r\n  \"corsOptions\": null,\r\n  \"suggesters\": [],\r\n  \"analyzers\": [],\r\n  \"normalizers\": [],\r\n  \"tokenizers\": [],\r\n  \"tokenFilters\": [],\r\n  \"charFilters\": [],\r\n  \"encryptionKey\": null,\r\n  \"similarity\": {\r\n    \"@odata.type\": \"#Microsoft.Azure.Search.BM25Similarity\",\r\n    \"k1\": null,\r\n    \"b\": null\r\n  },\r\n  \"semantic\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{service_name}}.search.windows.net/indexes?api-version=2021-04-30-Preview",
+					"protocol": "https",
+					"host": [
+						"{{service_name}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"indexes"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2021-04-30-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3_create_indexer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{api_key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{indexer_name}}\",\r\n  \"description\": null,\r\n  \"dataSourceName\": \"{{datasource_name}}\",\r\n  \"skillsetName\": null,\r\n  \"targetIndexName\": \"{{index_name}}\",\r\n  \"disabled\": null,\r\n  \"schedule\": null,\r\n  \"parameters\": {\r\n    \"batchSize\": 1000,\r\n    \"maxFailedItems\": -1,\r\n    \"maxFailedItemsPerBatch\": -1,\r\n    \"base64EncodeKeys\": null,\r\n    \"configuration\": {\r\n      \"parsingMode\": \"json\"\r\n    }\r\n  },\r\n  \"fieldMappings\": [\r\n    {\r\n      \"sourceFieldName\": \"/medline_ui\",\r\n      \"targetFieldName\": \"medline_ui\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/mesh_terms\",\r\n      \"targetFieldName\": \"mesh_terms\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/title\",\r\n      \"targetFieldName\": \"title\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/publication_type\",\r\n      \"targetFieldName\": \"publication_type\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/abstract\",\r\n      \"targetFieldName\": \"abstract\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/author\",\r\n      \"targetFieldName\": \"author\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"/source\",\r\n      \"targetFieldName\": \"source\"\r\n    },\r\n    {\r\n      \"sourceFieldName\": \"metadata_storage_path\",\r\n      \"targetFieldName\": \"metadata_storage_path\"\r\n    }\r\n  ],\r\n  \"outputFieldMappings\": [],\r\n  \"cache\": null,\r\n  \"encryptionKey\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{service_name}}.search.windows.net/indexers?api-version=2021-04-30-Preview",
+					"protocol": "https",
+					"host": [
+						"{{service_name}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"indexers"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2021-04-30-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "service_name",
+			"value": ""
+		},
+		{
+			"key": "api_key",
+			"value": ""
+		},
+		{
+			"key": "connection_string",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "container_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "blob_folder",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "datasource_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "index_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "indexer_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
