@@ -31,3 +31,4 @@ flask_jwt_extended==4.4.2
 flask-restful==0.3.9
 pandas==1.4.3
 pandasql==0.7.3
+tqdm==4.64.0
