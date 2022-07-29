@@ -16,23 +16,126 @@ Uber's solution is to first build a food knowledge graph. Then, based the knowle
 
 <figure>
 <img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
-<figcaption align = "center"><b>Fig.1 - Food Knowledge Graph</b></figcaption>
+<!-- <figcaption align = "center"><b>Fig.1 - Food Knowledge Graph</b></figcaption> -->
 </figure>
 
 ## Prerequisites
-
-In order to successfully complete your solution, you will need to have access to and or provisioned the following:
+ 
+In order to successfully complete your solution, you will need to have access to and or provisioned the following: 
 
 * Access to an Azure subscription
 
 ## Getting Started
 
+### Infrastructure Setup
+
+Below is the architecture used by this solution. Both App Services are running a Flask application. One can extend it based on the actual requirement. For example, it is natural to adding tool like Azure Data Factory to ochestrate the data ingestion part.
+![img](docs/media/architecture.PNG)
+
 Provision the following Azure resources in your own subscription: 
-1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure))
+1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revist this in the later step.)
 2. An Azure App Service to host the search APIs
 3. A cognitive search service to index the documents
 4. A Blob storage to stage the sample documents
-5. A CosmosDB with Gremlin API to store the Knowledge Graph
+5. A Cosmos DB instance with Gremlin API to store the Knowledge Graph
+
+Besides, we assume the search APIs will be protected by token authentication. So, you need to configure the authentication provider for the search APIs App Service. We simply configure Azure AD login following this [guide](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically).   
+
+After the frontend App Service is deployed, you need to add the following enviroment variables in the [Application settings](https://docs.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal):
+```
+# Search API Secret
+SEARCH_API_URL # the URL of the search APIs App Service.
+SEARCH_AUTH_URL # the URL of the authentication provider, it should be https://login.microsoftonline.com/{tenant id}/oauth2/token if Azure AD login is configured
+SEARCH_GRANT_TYPE # simply set it as client_credentials
+SEARCH_CLIENT_ID # the client id when you registered in the identity provider for the search APIs App Service. 
+SEARCH_CLIENT_SECRET # a client secret for the application you registered in the identity provider. Follow this https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret to create a client secret if you dont have.   
+
+# Configuration for UI Application
+APP_SECRET_KEY  # The secret key for frontend application to maintain cookies
+MAX_CONTENT_SIZE  # The content size setting used by the frontend application. Set it as 200.  
+```
+
+Similarly, you need to configure the following environment variables for the search APIs App Service:
+```
+# Azure Cognitive Configuration
+ACS_ENDPOINT # The url of ACS endpoint 
+ACS_API_KEY # The access key of the ACS 
+ACS_INDEX_NAME # The index name you want to use in ACS, e.g., ohsumed
+ACS_API_VERSION # The API version of ACS, we have tested on 2021-04-30-Preview only 
+
+# Cosmos DB Configuration
+COSMOS_DB_SERVER # The address of the Cosmos DB server
+COSMOS_DB_DATABASE # The database you create in Cosmos DB
+COSMOS_DB_GRAPH # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD # The access key to the Cosmos DB
+```
+
+### Prepare Sample Data
+We are using the Hugging Face [dataset](https://huggingface.co/datasets/ohsumed) to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
+For the knowledge graph, we simply create a small instance based on the Ontology described in [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together many health and biomedical vocabularies and standards to enable interoperability between computer systems.
+
+![img](docs/media/sample_kg.PNG)
+1. Git clone the whole repository.
+
+2. Create Virtual Enviroment using venv or conda. The current solution is only tested in python 3.8. For example:
+```
+conda create -n kg-search python=3.8
+conda activate kg-search
+```
+
+3. Navigate to the cloned repository and install python dependency:
+```
+python -m pip install -r requirements.txt
+```
+
+4. Create a .env file in root directory and fill in the value for the following properties:
+```
+# Cosmos DB Configuration
+COSMOS_DB_SERVER=    # The address of the Cosmos DB server
+COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
+COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
+```
+
+5. Initialize the KG. Navigate to the script folders and run:
+```
+python initialize_graph.py
+```
+
+6. Prepare the sample data set as JSON files:
+```
+python prepare_data.py -o [the output drectory]
+```
+
+7. Upload the output files to the Blob storage you created before.
+
+8. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
+    * send "1_create_datasource" request to create the datasource in ACS by setting the following values: 
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {datasource_name} in Body to the data source name you want to use in ACS
+      * {connection_string} in Body to the blob storage
+      * {container} in Body to the contain name
+      * {blob_folder} in Body to the folder that stores the sample data in Blob
+    * send "2_create_index" request to create the index in ACS by setting the following values:
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {index_name} in Body to the index name you want to use in ACS 
+    * send "3_create_indexer" request to run the indexer in ACS by setting the following values:
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {indexer_name} in Body to the indexer name you want to use in ACS 
+      * {datasource_name} in Body to the data source name you want to use in ACS
+      * {index_name} in Body to the index name you want to use in ACS 
+
+## Deploy the code to App Service
+
+Currently, both the search APIs source code and frontend application source code 
+
+Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in you page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
+![img](docs/media/expansion.png)
+
+## Adapt the solution to your domain
 
 ## Contributing
 
