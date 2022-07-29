@@ -1,14 +1,25 @@
-# Project
+# Knowledge Graph Enabled Search Accelerator
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+This repo contains the core components for the Knowledge Graph Enabled Search solution.
+The solution is designed as a template such that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
+For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
-As the maintainer of this project, please make a few updates:
+The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution. 
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+# Why introducing knowledge graph to search engine
+
+For general search engine like Lucene, Azure Cognitive Search, etc., they index the documents by terms and rank the results based on term frequency. These search engines, however, are not designed to interpret the complex mental associations humans natually create between various concepts. 
+
+Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understanding/): an eater might have a certain type of food in mind, but choose something else while browsing the app. For example, an eater might search for udon, but end up ordering soba. In this case, the eater may have been looking for something similar to udon, such as soba and ramen, instead of only being interested in udon. As humans, it might seem obvious; Udon and soba are somewhat similar, Chinese and Japanese are both Asian cuisines. However, machines have a more difficult time understanding these similarities only based on the textual information. In fact, a lot of work goes into training them to make these types of intelligent decisions on the semantic level. 
+
+Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanse food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user that better meet his/her intention. Expecially, it will be very useful when there is no restaurant nearby is selling "udon".    
+
+![Food Knowledge Graph Sample](http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg)
+
+
+## Prerequisites
+
+## Getting Started
 
 ## Contributing
 
