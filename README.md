@@ -14,12 +14,25 @@ Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understand
 
 Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanse food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user that better meet his/her intention. Expecially, it will be very useful when there is no restaurant nearby is selling "udon".    
 
-![Food Knowledge Graph Sample](http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg)
-
+<figure>
+<img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
+<figcaption align = "center"><b>Fig.1 - Food Knowledge Graph</b></figcaption>
+</figure>
 
 ## Prerequisites
 
+In order to successfully complete your solution, you will need to have access to and or provisioned the following:
+
+* Access to an Azure subscription
+
 ## Getting Started
+
+Provision the following Azure resources in your own subscription: 
+1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure))
+2. An Azure App Service to host the search APIs
+3. A cognitive search service to index the documents
+4. A Blob storage to stage the sample documents
+5. A CosmosDB with Gremlin API to store the Knowledge Graph
 
 ## Contributing
 
