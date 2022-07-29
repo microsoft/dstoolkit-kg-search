@@ -8,11 +8,11 @@ The solution can be generalized to different kind of industries. In this templat
 
 # Why introducing knowledge graph to search engine
 
-For general search engine like Lucene, Azure Cognitive Search, etc., they index the documents by terms and rank the results based on term frequency. These search engines, however, are not designed to interpret the complex mental associations humans natually create between various concepts. 
+For general search engine like Lucene, Azure Cognitive Search, etc., they index the documents by terms and rank the results based on term frequency. These search engines, however, are not designed to interpret the complex mental associations humans naturally create between various concepts. 
 
 Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understanding/): an eater might have a certain type of food in mind, but choose something else while browsing the app. For example, an eater might search for udon, but end up ordering soba. In this case, the eater may have been looking for something similar to udon, such as soba and ramen, instead of only being interested in udon. As humans, it might seem obvious; Udon and soba are somewhat similar, Chinese and Japanese are both Asian cuisines. However, machines have a more difficult time understanding these similarities only based on the textual information. In fact, a lot of work goes into training them to make these types of intelligent decisions on the semantic level. 
 
-Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanse food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user that better meet his/her intention. Expecially, it will be very useful when there is no restaurant nearby is selling "udon".    
+Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanese food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user that better meet his/her intention. Especially, it will be very useful when there is no restaurant nearby is selling "udon".    
 
 <figure>
 <img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
@@ -29,7 +29,7 @@ In order to successfully complete your solution, you will need to have access to
 
 ### Infrastructure Setup
 
-Below is the architecture used by this solution. Both App Services are running a Flask application. One can extend it based on the actual requirement. For example, it is natural to adding tool like Azure Data Factory to ochestrate the data ingestion part.
+Below is the architecture used by this solution. Both App Services are running a Flask application. One can extend it based on the actual requirement. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
 ![img](docs/media/architecture.PNG)
 
 Provision the following Azure resources in your own subscription: 
@@ -41,7 +41,7 @@ Provision the following Azure resources in your own subscription:
 
 Besides, we assume the search APIs will be protected by token authentication. So, you need to configure the authentication provider for the search APIs App Service. We simply configure Azure AD login following this [guide](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically).   
 
-After the frontend App Service is deployed, you need to add the following enviroment variables in the [Application settings](https://docs.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal):
+After the frontend App Service is deployed, you need to add the following environment variables in the [Application settings](https://docs.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal):
 ```
 # Search API Secret
 SEARCH_API_URL # the URL of the search APIs App Service.
@@ -77,7 +77,7 @@ For the knowledge graph, we simply create a small instance based on the Ontology
 ![img](docs/media/sample_kg.PNG)
 1. Git clone the whole repository.
 
-2. Create Virtual Enviroment using venv or conda. The current solution is only tested in python 3.8. For example:
+2. Create Virtual Environment using venv or conda. The current solution is only tested in python 3.8. For example:
 ```
 conda create -n kg-search python=3.8
 conda activate kg-search
@@ -110,7 +110,7 @@ python prepare_data.py -o [the output drectory]
 7. Upload the output files to the Blob storage you created before.
 
 8. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
-    * send "1_create_datasource" request to create the datasource in ACS by setting the following values: 
+    * send "1_create_datasource" request to create the data source in ACS by setting the following values: 
       * {service_name} in URL to your ACS name;
       * {api_key} in Headers to your ACS access key;
       * {datasource_name} in Body to the data source name you want to use in ACS
@@ -130,9 +130,21 @@ python prepare_data.py -o [the output drectory]
 
 ## Deploy the code to App Service
 
-Currently, both the search APIs source code and frontend application source code 
+Currently, both the search APIs source code and frontend application source code are sitting in the same repository. We need to configure the startup command in both App Services such that they can pick up the right code to run. Following this [guide](https://docs.microsoft.com/en-us/azure/developer/python/configure-python-web-app-on-app-service#create-a-startup-file) to change the startup command.
 
-Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in you page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
+For the search APIs App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
+```
+
+For the frontend App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
+```
+
+If you are using Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
+
+Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in your page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
 ![img](docs/media/expansion.png)
 
 ## Adapt the solution to your domain
