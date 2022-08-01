@@ -27,9 +27,9 @@ In order to successfully complete your solution, you will need to have access to
 
 ## Getting Started
 
-### Infrastructure Setup
+### Infrastructure setup
 
-Below is the architecture used by this solution. Both App Services are running a Flask application. One can extend it based on the actual requirement. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
+Below is the architecture used by this solution. Both App Services are running a Flask application. You can reuse/replace it based on your scenario. You can also add more components to the solution. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
 ![img](docs/media/architecture.PNG)
 
 Provision the following Azure resources in your own subscription: 
@@ -55,7 +55,7 @@ APP_SECRET_KEY  # The secret key for frontend application to maintain cookies
 MAX_CONTENT_SIZE  # The content size setting used by the frontend application. Set it as 200.  
 ```
 
-Similarly, you need to configure the following environment variables for the search APIs App Service:
+Similarly, you need to add the following environment variables for the search APIs App Service:
 ```
 # Azure Cognitive Configuration
 ACS_ENDPOINT # The url of ACS endpoint 
@@ -70,7 +70,7 @@ COSMOS_DB_GRAPH # The graph collection in the above database that actually store
 COSMOS_DB_PASSWORD # The access key to the Cosmos DB
 ```
 
-## Deploy the code to App Service
+### Deploy the source code to App Service
 Currently, both the search APIs and frontend application source code are sitting in the same repository. We need to configure the startup command in both App Services such that they can pick up the right code to run. Following this [guide](https://docs.microsoft.com/en-us/azure/developer/python/configure-python-web-app-on-app-service#create-a-startup-file) to change the startup command.
 
 For the search APIs App Service, set the startup command as:
@@ -86,9 +86,10 @@ gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
 You may first need to clone the repository to your machine if you did not.
 In Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
 
-### Prepare Sample Data
+### Prepare sample data
 We are using the Hugging Face [OHSUMED](https://huggingface.co/datasets/ohsumed) dataset to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
 For the knowledge graph, we simply create a small instance based on the Ontology described in [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together many health and biomedical vocabularies and standards to enable interoperability between computer systems.
+In this demo, a rule based NER will try to detect if there is any disease name mentioned in the search query. If yes, it will expand the search by adding its child and parrent classes into the rewritten query.
 
 ![img](docs/media/sample_kg.PNG)
 
@@ -143,14 +144,14 @@ python prepare_data.py -o [the output drectory]
       * {datasource_name} in Body to the data source name you want to use in ACS
       * {index_name} in Body to the index name you want to use in ACS 
 
-
+### Run the demo
 
 Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in your page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
 ![img](docs/media/expansion.png)
 
 ## Adapt the solution to your domain
 
-You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application to your own. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
+You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application by your own one. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
 * Preprocessing: conduct any preprocessing logic of the search query, e.g., removing domain specific stop words.
 * NER: conduct NER to the preprocessed search text
 * Graph Query: take the NER result as input, retrieve the relevant entities from the KG
