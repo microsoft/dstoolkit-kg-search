@@ -1,7 +1,7 @@
 # Knowledge Graph Enabled Search Accelerator
 
 This repo contains the core components for the Knowledge Graph Enabled Search solution.
-The solution is designed as a template such that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
+The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
 For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
 The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution. 
@@ -12,7 +12,7 @@ For general search engine like Lucene, Azure Cognitive Search, etc., they index 
 
 Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understanding/): an eater might have a certain type of food in mind, but choose something else while browsing the app. For example, an eater might search for udon, but end up ordering soba. In this case, the eater may have been looking for something similar to udon, such as soba and ramen, instead of only being interested in udon. As humans, it might seem obvious; Udon and soba are somewhat similar, Chinese and Japanese are both Asian cuisines. However, machines have a more difficult time understanding these similarities only based on the textual information. In fact, a lot of work goes into training them to make these types of intelligent decisions on the semantic level. 
 
-Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanese food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user that better meet his/her intention. Especially, it will be very useful when there is no restaurant nearby is selling "udon".    
+Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanese food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user to better meet his/her intention. Especially, it will be very useful when there is no restaurant nearby is selling "udon".    
 
 <figure>
 <img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
@@ -70,25 +70,40 @@ COSMOS_DB_GRAPH # The graph collection in the above database that actually store
 COSMOS_DB_PASSWORD # The access key to the Cosmos DB
 ```
 
+## Deploy the code to App Service
+Currently, both the search APIs and frontend application source code are sitting in the same repository. We need to configure the startup command in both App Services such that they can pick up the right code to run. Following this [guide](https://docs.microsoft.com/en-us/azure/developer/python/configure-python-web-app-on-app-service#create-a-startup-file) to change the startup command.
+
+For the search APIs App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
+```
+
+For the frontend App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
+```
+
+You may first need to clone the repository to your machine if you did not.
+In Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
+
 ### Prepare Sample Data
-We are using the Hugging Face [dataset](https://huggingface.co/datasets/ohsumed) to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
+We are using the Hugging Face [OHSUMED](https://huggingface.co/datasets/ohsumed) dataset to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
 For the knowledge graph, we simply create a small instance based on the Ontology described in [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together many health and biomedical vocabularies and standards to enable interoperability between computer systems.
 
 ![img](docs/media/sample_kg.PNG)
-1. Git clone the whole repository.
 
-2. Create Virtual Environment using venv or conda. The current solution is only tested in python 3.8. For example:
+1. Create Virtual Environment using venv or conda. The current solution is only tested in python 3.8. For example:
 ```
 conda create -n kg-search python=3.8
 conda activate kg-search
 ```
 
-3. Navigate to the cloned repository and install python dependency:
+2. Navigate to the cloned repository and install python dependency:
 ```
 python -m pip install -r requirements.txt
 ```
 
-4. Create a .env file in root directory and fill in the value for the following properties:
+3. Create a .env file in root directory and fill in the value for the following properties:
 ```
 # Cosmos DB Configuration
 COSMOS_DB_SERVER=    # The address of the Cosmos DB server
@@ -97,19 +112,19 @@ COSMOS_DB_GRAPH=     # The graph collection in the above database that actually 
 COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
 ```
 
-5. Initialize the KG. Navigate to the script folders and run:
+4. To initialize the sample KG, navigate to the script folder and run:
 ```
 python initialize_graph.py
 ```
 
-6. Prepare the sample data set as JSON files:
+5. Prepare the sample medical data set as JSON files:
 ```
 python prepare_data.py -o [the output drectory]
 ```
 
-7. Upload the output files to the Blob storage you created before.
+6. Upload the output files to the Blob storage you created before.
 
-8. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
+7. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
     * send "1_create_datasource" request to create the data source in ACS by setting the following values: 
       * {service_name} in URL to your ACS name;
       * {api_key} in Headers to your ACS access key;
@@ -128,27 +143,46 @@ python prepare_data.py -o [the output drectory]
       * {datasource_name} in Body to the data source name you want to use in ACS
       * {index_name} in Body to the index name you want to use in ACS 
 
-## Deploy the code to App Service
 
-Currently, both the search APIs source code and frontend application source code are sitting in the same repository. We need to configure the startup command in both App Services such that they can pick up the right code to run. Following this [guide](https://docs.microsoft.com/en-us/azure/developer/python/configure-python-web-app-on-app-service#create-a-startup-file) to change the startup command.
-
-For the search APIs App Service, set the startup command as:
-```
-gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
-```
-
-For the frontend App Service, set the startup command as:
-```
-gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
-```
-
-If you are using Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
 
 Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in your page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
 ![img](docs/media/expansion.png)
 
 ## Adapt the solution to your domain
 
+You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application to your own. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
+* Preprocessing: conduct any preprocessing logic of the search query, e.g., removing domain specific stop words.
+* NER: conduct NER to the preprocessed search text
+* Graph Query: take the NER result as input, retrieve the relevant entities from the KG
+* Query Rewriting: rewrite the original search query. It will be the final query being submitted to ACS
+* Postprocessing: include any postprocessing logic here, e.g., user based filtering or re-rakning 
+![img](docs/media/search_api.PNG)
+
+Every component has a base class defined. You can create your own class by inheriting the corresponding base class. The whole solution will work seamlessly if you follow the same API designed. 
+
+Here is the code structure of this solution.
+```
+├───api     # folder containing all the search APIs components
+│   ├───app.py       # the api web service
+│   └───search_expansion   # the search expansion component
+│       ├───kg   # extract relevant entities from KG
+|       ├───nerprocessing   # extract entities of interest from search text
+|       ├───postprocessing   # postprocess the ACS before sending back to frontend application
+|       ├───preprocessing    # preprocess the original search text
+|       ├───rewriting    # rewrite the original search text
+|       ├───search_expander.py   # control the whole execution flow
+|       ├───search_sdk.py    # encapsulate the API for the underlying search engine
+│       └───util.py
+├───config    # configuration for log or other non-credential settings
+├───docs
+│   ├───media           # storing images, videos, etc, needed for docs.
+├───scripts           # scripts for preparing data
+├───tests           # unit tests
+|── ui       # the frondend applicaiton
+├── .gitignore
+├── README.md
+└── requirement.txt
+```
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
