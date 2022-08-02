@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/64599697/182273659-e65663e1-05a0-400d-9993-e2e3766c9567.png)
+
 # Knowledge Graph Enabled Search Accelerator
 
 This repo contains the core components for the Knowledge Graph Enabled Search solution.
