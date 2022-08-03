@@ -200,6 +200,50 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
+### Local Development
+
+The frontend and search APIs applicatons can be run locally. The source code is tested in python 3.8 only. Here are the steps to start the frontend and search APIs applications:
+1. Git clone the repository
+2. Create a virtual enviroment and install the dependency:
+```
+conda create -n kg-search python=3.8
+conda activate kg-search
+python -m pip install -r requirements.txt
+```
+3. Create a .env file in the root directory of the local repository and provide the values for the following properties:
+```
+# Azure Cognitive Configuration
+ACS_ENDPOINT= # The url of ACS endpoint 
+ACS_API_KEY= # The access key of the ACS 
+ACS_INDEX_NAME= # The index name you want to use in ACS, e.g., ohsumed
+ACS_API_VERSION= # The API version of ACS, we have tested on 2021-04-30-Preview only 
+
+# Cosmos DB Configuration
+COSMOS_DB_SERVER=    # The address of the Cosmos DB server
+COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
+COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
+
+# Search API Configuration
+SEARCH_API_URL= # the URL of the search APIs App Service. In the local development case, it should point to your local url.
+LOCAL_DEBUG=1  # set local debug to be 1 to avoid any authentication setting.
+
+# Frontend Configuration
+APP_SECRET_KEY=  # The secret key for frontend application to maintain cookies. It can be arbitrary string. 
+MAX_CONTENT_SIZE=200  # The content size setting used by the frontend application. Set it as 200.
+```
+
+4. Run the following command under the api folder to start the search APIs flask application. You can use any port number you want.
+This url will be your SEARCH_API_URL in the .env file.
+```
+flask run --host=0.0.0.0 --port=5000
+```
+5. Run the following command under the ui folder to start the frontend flask application.
+```
+flask run --host=0.0.0.0 --port=5001
+```
+6. You can now visit the frontend application by the url http://127.0.0.1:5001 if you follow the same command above. 
+
 ## Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft 
