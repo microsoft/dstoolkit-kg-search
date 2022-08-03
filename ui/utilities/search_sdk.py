@@ -2,20 +2,25 @@ import requests
 import os
 import time
 
+LOCAL_DEBUG = int(os.environ.get('LOCAL_DEBUG', 0))
+
 class SearchSDK:
     
-    token = None
+    token = 'DUMMY'
     token_expired_time = None
 
     def __init__(self):
 
-        self.search_auth_url = os.environ['SEARCH_AUTH_URL']
         self.search_api_url = os.environ['SEARCH_API_URL']
-        self.search_grant_type = os.environ['SEARCH_GRANT_TYPE']
-        self.search_client_id = os.environ['SEARCH_CLIENT_ID']
-        self.search_client_secret = os.environ['SEARCH_CLIENT_SECRET']
-        
-        self.refresh_token()
+
+        if LOCAL_DEBUG != 1:
+            self.search_auth_url = os.environ['SEARCH_AUTH_URL']
+            
+            self.search_grant_type = os.environ['SEARCH_GRANT_TYPE']
+            self.search_client_id = os.environ['SEARCH_CLIENT_ID']
+            self.search_client_secret = os.environ['SEARCH_CLIENT_SECRET']
+            
+            self.refresh_token()
 
     def refresh_token(self):
 
@@ -38,10 +43,14 @@ class SearchSDK:
         # current timestamp
         current_time = int(time.time())
 
-        if current_time > self.token_expired_time:
-            self.refresh_token()
+        if LOCAL_DEBUG != 1:
+            if current_time > self.token_expired_time:
+                self.refresh_token()
 
-        headers  = {'Authorization': f"Bearer {self.token}"}
+            headers  = {'Authorization': f"Bearer {self.token}"}
+        
+        else:
+            headers = None
 
         r = requests.post(f"{self.search_api_url}/search?kg_enabled={kg_enabled}", headers=headers, json=query_schema)
 
