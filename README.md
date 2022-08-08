@@ -35,7 +35,7 @@ Below is the architecture used by this solution. Both App Services are running a
 ![img](docs/media/architecture.PNG)
 
 Provision the following Azure resources in your own subscription: 
-1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revist this in the later step.)
+1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revisit this in the later step.)
 2. An Azure App Service to host the search APIs
 3. A cognitive search service to index the documents
 4. A Blob storage to stage the sample documents
@@ -50,7 +50,7 @@ SEARCH_API_URL # the URL of the search APIs App Service.
 SEARCH_AUTH_URL # the URL of the authentication provider, it should be https://login.microsoftonline.com/{tenant id}/oauth2/token if Azure AD login is configured
 SEARCH_GRANT_TYPE # simply set it as client_credentials
 SEARCH_CLIENT_ID # the client id when you registered in the identity provider for the search APIs App Service. 
-SEARCH_CLIENT_SECRET # a client secret for the application you registered in the identity provider. Follow this https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret to create a client secret if you dont have.   
+SEARCH_CLIENT_SECRET # a client secret for the application you registered in the identity provider. Follow this https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret to create a client secret if you don't have.   
 
 # Configuration for UI Application
 APP_SECRET_KEY  # The secret key for frontend application to maintain cookies
@@ -122,29 +122,18 @@ python initialize_graph.py
 
 5. Prepare the sample medical data set as JSON files:
 ```
-python prepare_data.py -o [the output drectory]
+python prepare_data.py -o [the output directory]
 ```
 
 6. Upload the output files to the Blob storage you created before.
 
-7. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
-    * send "1_create_datasource" request to create the data source in ACS by setting the following values: 
-      * {service_name} in URL to your ACS name;
-      * {api_key} in Headers to your ACS access key;
-      * {datasource_name} in Body to the data source name you want to use in ACS
-      * {connection_string} in Body to the blob storage
-      * {container} in Body to the contain name
-      * {blob_folder} in Body to the folder that stores the sample data in Blob
-    * send "2_create_index" request to create the index in ACS by setting the following values:
-      * {service_name} in URL to your ACS name;
-      * {api_key} in Headers to your ACS access key;
-      * {index_name} in Body to the index name you want to use in ACS 
-    * send "3_create_indexer" request to run the indexer in ACS by setting the following values:
-      * {service_name} in URL to your ACS name;
-      * {api_key} in Headers to your ACS access key;
-      * {indexer_name} in Body to the indexer name you want to use in ACS 
-      * {datasource_name} in Body to the data source name you want to use in ACS
-      * {index_name} in Body to the index name you want to use in ACS 
+7. Import the file "scripts/create_acs_index.postman_collection.json" into [Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) to create a Postman collection named "create_acs_index". The collection contains the following Azure Cognitive Search API calls that can be run in the following order to index the uploaded OHSUMED data:
+    * 1_create_datasource: Create a [data source](https://docs.microsoft.com/en-us/rest/api/searchservice/create-data-source) to connect to the OHSUMED data in the blob storage.
+    * 2_create_index: Define an [index](https://docs.microsoft.com/en-us/rest/api/searchservice/create-index) schema to host the data.
+    * 3_create_indexer: Create [an indexer](https://docs.microsoft.com/en-us/rest/api/searchservice/create-indexer) to index the OHSUMED data to the defined index. 
+
+     Before running the collection, [edit the collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) in Postman based on your Azure service setup:![img](docs/media/postman_vars.PNG) Having configured the collection variables, you can [run the collection](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/#configuring-a-collection-run) in the order as shown below: ![img](docs/media/postman_run_collection.PNG) 
+
 
 ### Run the demo
 
@@ -158,7 +147,7 @@ You can reuse differnet parts of the code for your own application. The key comp
 * NER: conduct NER to the preprocessed search text
 * Graph Query: take the NER result as input, retrieve the relevant entities from the KG
 * Query Rewriting: rewrite the original search query. It will be the final query being submitted to ACS
-* Postprocessing: include any postprocessing logic here, e.g., user based filtering or re-rakning 
+* Postprocessing: include any postprocessing logic here, e.g., user based filtering or re-ranking 
 ![img](docs/media/search_api.PNG)
 
 Every component has a base class defined. You can create your own class by inheriting the corresponding base class. The whole solution will work seamlessly if you follow the same API designed. 
@@ -181,7 +170,7 @@ Here is the code structure of this solution.
 │   ├───media           # storing images, videos, etc, needed for docs.
 ├───scripts           # scripts for preparing data
 ├───tests           # unit tests
-|── ui       # the frondend applicaiton
+|── ui       # the front-end application
 ├── .gitignore
 ├── README.md
 └── requirement.txt
@@ -202,9 +191,9 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ### Local Development
 
-The frontend and search APIs applicatons can be run locally. The source code is tested in python 3.8 only. Here are the steps to start the frontend and search APIs applications:
+The frontend and search APIs applications can be run locally. The source code is tested in python 3.8 only. Here are the steps to start the frontend and search APIs applications:
 1. Git clone the repository
-2. Create a virtual enviroment and install the dependency:
+2. Create a virtual environment and install the dependency:
 ```
 conda create -n kg-search python=3.8
 conda activate kg-search
