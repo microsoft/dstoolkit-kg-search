@@ -132,7 +132,7 @@ python prepare_data.py -o [the output directory]
     * 2_create_index: Define an [index](https://docs.microsoft.com/en-us/rest/api/searchservice/create-index) schema to host the data.
     * 3_create_indexer: Create [an indexer](https://docs.microsoft.com/en-us/rest/api/searchservice/create-indexer) to index the OHSUMED data to the defined index. 
 
-     Before running the collection, [edit the collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) in Postman based on your Azure service setup:![img](docs/media/postman_vars.PNG) Having configured the collection variables, you can [run the collection](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/#configuring-a-collection-run) in the order as shown below: ![img](docs/media/postman_run_collection.PNG) 
+     Before running the collection, [edit the collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) in Postman based on your Azure service setup:![img](docs/media/postman_vars.png) Having configured the collection variables, you can [run the collection](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/#configuring-a-collection-run) in the order as shown below: ![img](docs/media/postman_run_collection.png) 
 
 
 ### Run the demo
