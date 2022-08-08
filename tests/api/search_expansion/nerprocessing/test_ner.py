@@ -20,8 +20,8 @@ class DemoNERTest(unittest.TestCase):
         load_dotenv() 
         
         config = {}
-        config['endpoint'] = os.environ['NER_ENDPOINT']
-        config['token'] = os.environ['NER_BEAR_TOKEN']
+        config['endpoint'] = os.environ.get('NER_ENDPOINT', None)
+        config['token'] = os.environ.get('NER_BEAR_TOKEN', None)
         
         cls.ner = UMLSNer(config)
 

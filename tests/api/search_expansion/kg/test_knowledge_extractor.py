@@ -33,33 +33,33 @@ class KnowledgeExtractorTest(unittest.TestCase):
         """
         pass
 
-    def test_extract_hyponyms_disease(self):
-        """Test extracting hyponyms disease
-        """
+    # def test_extract_hyponyms_disease(self):
+    #     """Test extracting hyponyms disease
+    #     """
   
-        disease_name = 'keratoconus'
+    #     disease_name = 'keratoconus'
 
-        similar_diseases = KnowledgeExtractorTest.extractor.extract_hyponyms_disease(disease_name)
+    #     similar_diseases = KnowledgeExtractorTest.extractor.extract_hyponyms_disease(disease_name)
         
-        assert len(similar_diseases) > 0
+    #     assert len(similar_diseases) > 0
 
-    def test_extract_hypernyms_disease(self):
-        """Test extracting hypernyms disease
-        """
+    # def test_extract_hypernyms_disease(self):
+    #     """Test extracting hypernyms disease
+    #     """
   
-        disease_name = 'keratoconus'
+    #     disease_name = 'keratoconus'
 
-        similar_diseases = KnowledgeExtractorTest.extractor.extract_hypernyms_disease(disease_name)
+    #     similar_diseases = KnowledgeExtractorTest.extractor.extract_hypernyms_disease(disease_name)
         
-        assert len(similar_diseases) > 0
+    #     assert len(similar_diseases) > 0
 
-    def test_extract_similar_disease(self):
-        """Test extracting similar equipments.
-        """
-        disease_name = 'keratoconus'
-        similar_diseases = KnowledgeExtractorTest.extractor.extract_similar_disease(disease_name)
+    # def test_extract_similar_disease(self):
+    #     """Test extracting similar equipments.
+    #     """
+    #     disease_name = 'keratoconus'
+    #     similar_diseases = KnowledgeExtractorTest.extractor.extract_similar_disease(disease_name)
         
-        assert len(similar_diseases) > 0
+    #     assert len(similar_diseases) > 0
 
 
     def test_extract_relevant_entities(self):
