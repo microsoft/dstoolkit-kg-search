@@ -1,8 +1,9 @@
-![image](https://user-images.githubusercontent.com/64599697/182273659-e65663e1-05a0-400d-9993-e2e3766c9567.png)
+![image](https://user-images.githubusercontent.com/64599697/184281464-26db7aee-db3c-4369-b66c-305b2eeb5fef.png)
 
-# Knowledge Graph Enabled Search Accelerator
 
-This repo contains the core components for the Knowledge Graph Enabled Search solution.
+# Knowledge Graph Powered Search Accelerator
+
+This repo contains the core components for the Knowledge Graph Powered Search solution.
 The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
 For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
