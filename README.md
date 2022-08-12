@@ -1,15 +1,191 @@
-# Project
+![image](https://user-images.githubusercontent.com/64599697/182273659-e65663e1-05a0-400d-9993-e2e3766c9567.png)
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+# Knowledge Graph Enabled Search Accelerator
 
-As the maintainer of this project, please make a few updates:
+This repo contains the core components for the Knowledge Graph Enabled Search solution.
+The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
+For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution. 
 
+# Why introducing knowledge graph to search engine
+
+For general search engine like Lucene, Azure Cognitive Search, etc., they index the documents by terms and rank the results based on term frequency. These search engines, however, are not designed to interpret the complex mental associations humans naturally create between various concepts. 
+
+Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understanding/): an eater might have a certain type of food in mind, but choose something else while browsing the app. For example, an eater might search for udon, but end up ordering soba. In this case, the eater may have been looking for something similar to udon, such as soba and ramen, instead of only being interested in udon. As humans, it might seem obvious; Udon and soba are somewhat similar, Chinese and Japanese are both Asian cuisines. However, machines have a more difficult time understanding these similarities only based on the textual information. In fact, a lot of work goes into training them to make these types of intelligent decisions on the semantic level. 
+
+Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanese food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user to better meet his/her intention. Especially, it will be very useful when there is no restaurant nearby is selling "udon".    
+
+<figure>
+<img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
+<!-- <figcaption align = "center"><b>Fig.1 - Food Knowledge Graph</b></figcaption> -->
+</figure>
+
+## Prerequisites
+ 
+In order to successfully complete your solution, you will need to have access to and or provisioned the following: 
+
+* Access to an Azure subscription
+
+## Getting Started
+
+### Infrastructure setup
+
+Below is the architecture used by this solution. Both App Services are running a Flask application. You can reuse/replace it based on your scenario. You can also add more components to the solution. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
+![img](docs/media/architecture.PNG)
+
+Provision the following Azure resources in your own subscription: 
+1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revist this in the later step.)
+2. An Azure App Service to host the search APIs
+3. A cognitive search service to index the documents
+4. A Blob storage to stage the sample documents
+5. A Cosmos DB instance with Gremlin API to store the Knowledge Graph
+
+Besides, we assume the search APIs will be protected by token authentication. So, you need to configure the authentication provider for the search APIs App Service. We simply configure Azure AD login following this [guide](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically).   
+
+After the frontend App Service is deployed, you need to add the following environment variables in the [Application settings](https://docs.microsoft.com/en-us/azure/app-service/configure-common?tabs=portal):
+```
+# Search API Secret
+SEARCH_API_URL # the URL of the search APIs App Service.
+SEARCH_AUTH_URL # the URL of the authentication provider, it should be https://login.microsoftonline.com/{tenant id}/oauth2/token if Azure AD login is configured
+SEARCH_GRANT_TYPE # simply set it as client_credentials
+SEARCH_CLIENT_ID # the client id when you registered in the identity provider for the search APIs App Service. 
+SEARCH_CLIENT_SECRET # a client secret for the application you registered in the identity provider. Follow this https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret to create a client secret if you dont have.   
+
+# Configuration for UI Application
+APP_SECRET_KEY  # The secret key for frontend application to maintain cookies
+MAX_CONTENT_SIZE  # The content size setting used by the frontend application. Set it as 200.  
+```
+
+Similarly, you need to add the following environment variables for the search APIs App Service:
+```
+# Azure Cognitive Configuration
+ACS_ENDPOINT # The url of ACS endpoint 
+ACS_API_KEY # The access key of the ACS 
+ACS_INDEX_NAME # The index name you want to use in ACS, e.g., ohsumed
+ACS_API_VERSION # The API version of ACS, we have tested on 2021-04-30-Preview only 
+
+# Cosmos DB Configuration
+COSMOS_DB_SERVER # The address of the Cosmos DB server
+COSMOS_DB_DATABASE # The database you create in Cosmos DB
+COSMOS_DB_GRAPH # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD # The access key to the Cosmos DB
+```
+
+### Deploy the source code to App Service
+Currently, both the search APIs and frontend application source code are sitting in the same repository. We need to configure the startup command in both App Services such that they can pick up the right code to run. Following this [guide](https://docs.microsoft.com/en-us/azure/developer/python/configure-python-web-app-on-app-service#create-a-startup-file) to change the startup command.
+
+For the search APIs App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
+```
+
+For the frontend App Service, set the startup command as:
+```
+gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
+```
+
+You may first need to clone the repository to your machine if you did not.
+In Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
+
+### Prepare sample data
+We are using the Hugging Face [OHSUMED](https://huggingface.co/datasets/ohsumed) dataset to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
+For the knowledge graph, we simply create a small instance based on the Ontology described in [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together many health and biomedical vocabularies and standards to enable interoperability between computer systems.
+In this demo, a rule based NER will try to detect if there is any disease name mentioned in the search query. If yes, it will expand the search by adding its child and parrent classes into the rewritten query.
+
+![img](docs/media/sample_kg.PNG)
+
+1. Create Virtual Environment using venv or conda. The current solution is only tested in python 3.8. For example:
+```
+conda create -n kg-search python=3.8
+conda activate kg-search
+```
+
+2. Navigate to the cloned repository and install python dependency:
+```
+python -m pip install -r requirements.txt
+```
+
+3. Create a .env file in root directory and fill in the value for the following properties:
+```
+# Cosmos DB Configuration
+COSMOS_DB_SERVER=    # The address of the Cosmos DB server
+COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
+COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
+```
+
+4. To initialize the sample KG, navigate to the script folder and run:
+```
+python initialize_graph.py
+```
+
+5. Prepare the sample medical data set as JSON files:
+```
+python prepare_data.py -o [the output drectory]
+```
+
+6. Upload the output files to the Blob storage you created before.
+
+7. Import the file "scripts/create_acs_index.postman_collection.json" into [PostMan](https://www.postman.com/). Submit the following requests one by one:
+    * send "1_create_datasource" request to create the data source in ACS by setting the following values: 
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {datasource_name} in Body to the data source name you want to use in ACS
+      * {connection_string} in Body to the blob storage
+      * {container} in Body to the contain name
+      * {blob_folder} in Body to the folder that stores the sample data in Blob
+    * send "2_create_index" request to create the index in ACS by setting the following values:
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {index_name} in Body to the index name you want to use in ACS 
+    * send "3_create_indexer" request to run the indexer in ACS by setting the following values:
+      * {service_name} in URL to your ACS name;
+      * {api_key} in Headers to your ACS access key;
+      * {indexer_name} in Body to the indexer name you want to use in ACS 
+      * {datasource_name} in Body to the data source name you want to use in ACS
+      * {index_name} in Body to the index name you want to use in ACS 
+
+### Run the demo
+
+Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in your page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
+![img](docs/media/expansion.png)
+
+## Adapt the solution to your domain
+
+You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application by your own one. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
+* Preprocessing: conduct any preprocessing logic of the search query, e.g., removing domain specific stop words.
+* NER: conduct NER to the preprocessed search text
+* Graph Query: take the NER result as input, retrieve the relevant entities from the KG
+* Query Rewriting: rewrite the original search query. It will be the final query being submitted to ACS
+* Postprocessing: include any postprocessing logic here, e.g., user based filtering or re-rakning 
+![img](docs/media/search_api.PNG)
+
+Every component has a base class defined. You can create your own class by inheriting the corresponding base class. The whole solution will work seamlessly if you follow the same API designed. 
+
+Here is the code structure of this solution.
+```
+├───api     # folder containing all the search APIs components
+│   ├───app.py       # the api web service
+│   └───search_expansion   # the search expansion component
+│       ├───kg   # extract relevant entities from KG
+|       ├───nerprocessing   # extract entities of interest from search text
+|       ├───postprocessing   # postprocess the ACS before sending back to frontend application
+|       ├───preprocessing    # preprocess the original search text
+|       ├───rewriting    # rewrite the original search text
+|       ├───search_expander.py   # control the whole execution flow
+|       ├───search_sdk.py    # encapsulate the API for the underlying search engine
+│       └───util.py
+├───config    # configuration for log or other non-credential settings
+├───docs
+│   ├───media           # storing images, videos, etc, needed for docs.
+├───scripts           # scripts for preparing data
+├───tests           # unit tests
+|── ui       # the frondend applicaiton
+├── .gitignore
+├── README.md
+└── requirement.txt
+```
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
@@ -23,6 +199,50 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+### Local Development
+
+The frontend and search APIs applicatons can be run locally. The source code is tested in python 3.8 only. Here are the steps to start the frontend and search APIs applications:
+1. Git clone the repository
+2. Create a virtual enviroment and install the dependency:
+```
+conda create -n kg-search python=3.8
+conda activate kg-search
+python -m pip install -r requirements.txt
+```
+3. Create a .env file in the root directory of the local repository and provide the values for the following properties:
+```
+# Azure Cognitive Configuration
+ACS_ENDPOINT= # The url of ACS endpoint 
+ACS_API_KEY= # The access key of the ACS 
+ACS_INDEX_NAME= # The index name you want to use in ACS, e.g., ohsumed
+ACS_API_VERSION= # The API version of ACS, we have tested on 2021-04-30-Preview only 
+
+# Cosmos DB Configuration
+COSMOS_DB_SERVER=    # The address of the Cosmos DB server
+COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
+COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
+COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
+
+# Search API Configuration
+SEARCH_API_URL= # the URL of the search APIs App Service. In the local development case, it should point to your local url.
+LOCAL_DEBUG=1  # set local debug to be 1 to avoid any authentication setting.
+
+# Frontend Configuration
+APP_SECRET_KEY=  # The secret key for frontend application to maintain cookies. It can be arbitrary string. 
+MAX_CONTENT_SIZE=200  # The content size setting used by the frontend application. Set it as 200.
+```
+
+4. Run the following command under the api folder to start the search APIs flask application. You can use any port number you want.
+This url will be your SEARCH_API_URL in the .env file.
+```
+flask run --host=0.0.0.0 --port=5000
+```
+5. Run the following command under the ui folder to start the frontend flask application.
+```
+flask run --host=0.0.0.0 --port=5001
+```
+6. You can now visit the frontend application by the url http://127.0.0.1:5001 if you follow the same command above. 
 
 ## Trademarks
 
