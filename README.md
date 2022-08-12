@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/64599697/184281464-26db7aee-db3c-4369-b66c-305b2eeb5fef.png)
+![image](https://user-images.githubusercontent.com/64599697/184281648-a719c09d-ef33-48cb-b926-fef673801813.png)
 
 
 # Knowledge Graph Powered Search Accelerator
