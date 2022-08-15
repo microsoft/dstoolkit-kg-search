@@ -141,7 +141,7 @@ python scripts/prepare_data.py -o your_output_directory
 ```
 
 4. Upload the JSON files created in the previous step to a folder in an Azure Data Lake blob container, see an example below.
-![img](docs/media/blob_folder.PNG)
+![img](docs/media/blob_folder.png)
 
 5. Import the file "scripts/create_acs_index.postman_collection.json" into [Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) to create a Postman collection named "create_acs_index". The collection contains the following Azure Cognitive Search API calls that can be run in the following order to index the OHSUMED JSON files from the blob container:
     * 1_create_datasource: Create a [data source](https://docs.microsoft.com/en-us/rest/api/searchservice/create-data-source) to connect to the OHSUMED data in the blob container.
