@@ -2,39 +2,71 @@
 
 # Knowledge Graph Enabled Search Accelerator
 
-This repo contains the core components for the Knowledge Graph Enabled Search solution.
+This accelerator provides the code template to implement a domain-aware search solution with knowledge graph (KG) to enrich the organic results of a general purpose search engine. The use of the accelerator is demonstrated through an example implementation of a medical document retrieval solution. The example implementation uses a knowledge graph to expand the scope of search from the original query to semantically related queries to uncover documents that are relevant to the original query but may not contain the exact keywords. 
+
+ <!-- the original query.  to uses a medical knowledge graph to expand search perform search across the well-known [OHSUMED](https://link.springer.com/chapter/10.1007/978-1-4471-2099-5_20) medical dataset.  -->
+
+<p align="center"><img src="docs/media/animation.gif"></p>
+
+
+<!-- This repo contains the core components for the Knowledge Graph Enabled Search solution.
 The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
 For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
-The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution. 
+The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution.  -->
 
-# Why introducing knowledge graph to search engine
+## Knowledge Graph to Enhance Search Results
 
-For general search engine like Lucene, Azure Cognitive Search, etc., they index the documents by terms and rank the results based on term frequency. These search engines, however, are not designed to interpret the complex mental associations humans naturally create between various concepts. 
+Knowledge graph has been widely used to enhance search results by interpreting user intent based on semantic meaning of search terms. It is commonly applied to the following two search enhancement scenarios:
 
-Here is an example by [Uber Eat](https://eng.uber.com/uber-eats-query-understanding/): an eater might have a certain type of food in mind, but choose something else while browsing the app. For example, an eater might search for udon, but end up ordering soba. In this case, the eater may have been looking for something similar to udon, such as soba and ramen, instead of only being interested in udon. As humans, it might seem obvious; Udon and soba are somewhat similar, Chinese and Japanese are both Asian cuisines. However, machines have a more difficult time understanding these similarities only based on the textual information. In fact, a lot of work goes into training them to make these types of intelligent decisions on the semantic level. 
+* **Search refinement**: Knowledge graph can be used to refine search results by recognizing different meanings of a search term (e.g. "apple" can be a company or fruit). When search ambiguity is detected from knowledge graph a search engine can provide a refining option to the users to select a slice of the results based on their intent.
 
-Uber's solution is to first build a food knowledge graph. Then, based the knowledge graph, it will try to interpret the intent behind user's search. In the above example, the knowledge graph will tell us that udon is similar to ramen and soba, and it is a kind of Japanese food. So, besides of searching "udon", it will also search for "ramen", "soda" and other "Japanese" food. This can provide more options to the user to better meet his/her intention. Especially, it will be very useful when there is no restaurant nearby is selling "udon".    
+* **Search expansion**: Knowledge graph can also be used to expand search results through the relationships of the entities present in the search queries. For example [Uber Eats](https://www.uber.com/en-AU/blog/uber-eats-query-understanding/) uses a food knowledge graph to expand search from the original query to related terms to help their customers find food options that they had not considered (e.g. expand search from "udon" to terms such as "ramen", "soba", and "Japanese").
 
-<figure>
-<img src="http://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/06/Figure_3.jpg" alt="Trulli" class="center" style="width:50%">
-<!-- <figcaption align = "center"><b>Fig.1 - Food Knowledge Graph</b></figcaption> -->
-</figure>
+The code template provided by this solution acceleration is applicable to both search refinement and expansion scenarios.
 
-## Prerequisites
- 
-In order to successfully complete your solution, you will need to have access to and or provisioned the following: 
 
-* Access to an Azure subscription
+## An Example KG-Enabled Search Scenario
 
-## Getting Started
+To demonstrate the use of the solution accelerator this repo provides an example of using knowledge graph for search expansion in the context of medical document retrieval. 
 
-### Infrastructure setup
+An example knowledge graph is created based on [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together health and biomedical vocabularies and standards to enable interoperability between computer systems. We create an example knowledge graph based on an [ontology](https://en.wikipedia.org/wiki/Ontology_(information_science)) as shown below to capture the relationships between various [keratoconus](https://www.hopkinsmedicine.org/health/conditions-and-diseases/keratoconus)-related diseases and their corresponding treatments. 
+![img](docs/media/sample_kg.PNG)
 
-Below is the architecture used by this solution. Both App Services are running a Flask application. You can reuse/replace it based on your scenario. You can also add more components to the solution. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
-![img](docs/media/architecture.PNG)
+In a medical document retrieval scenario, parent (hypernym) and children (hyponyms) of a disease are considered to be highly related, hence are natural candidates for search expansion. The example search engine is therefore designed to automatically expand a disease term in the original query to related parent and children diseases. For example, the search engine will expand "keratoconus" to its parent and children diseases such as "protrusion", "corneal disease", "corneal ectasia", "stable condition keratoconus", and "acute hydrops keratoconus". 
 
-Provision the following Azure resources in your own subscription: 
+# Solution Design
+
+This accelerator implements the following solution design that contains 4 key components: 
+![img](docs/media/solution_design.png)
+* **Front-End UI**: A front-end application to surface the final search results to the end users.
+* **Graph DB**: A graph DB to host the knowledge graph. Azure Cosmos DB with Gremlin API is used as the graph DB. 
+* **Search Index**: A general purpose search engine to index and query the provided data. Azure Cognitive Search is used to index the data stored in the Azure Data Lake Storage (Gen 2) container.
+* **KG Search API**: An API that encapsulates the following workflow for KG-enabled search expansion/refinement:
+    
+    1. Preprocessing: Preprocess the search query, e.g. remove domain-specific stop words.
+    2. NER: Apply a Named Entity Recognition (NER) model to the preprocessed query to extract entities of interest. As NER is not the focus of this accelerator the example code uses a simple rule-based NER procedure. One can replace this simple implementation with an ML-based NER model to recognize domain-specific entities, e.g. by training a custom NER model using [Azure Cognitive Service for Language](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/overview). Please refer to ```api/search_expansion/nerprocessing/ner.py``` for NER model input and output formats. 
+    3. Graph Query: Take the NER result as the input, and retrieve related entities from the KG.
+    4. Query Rewriting: Use the entities retrieved from the KG to rewrite the original search query, and submit the rewritten query to the general purpose search engine. 
+    5. Postprocessing: Process the search results returned by the general purpose search engine, e.g. apply persona-based filtering or any re-ranking logic. The postprocessed results are surfaced to the end users through the front-end UI.
+
+The example code in this repo implements search expansion based on the above solution design. One can adapt the design for other search scenarios, specifically the scenarios that can benefit from the use of a domain-specific knowledge graph. 
+
+## Prerequisite
+
+You need to have an Azure subscription with the access to the following resources: 
+
+| Azure Resources      | Description | Note |
+| ----------- | ----------- | --------------|
+| Data Lake Storage | To store the data    | Use [Azure Data Lake Storage Gen2](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction)
+| Cognitive Search      | To index the data from the data lake   |
+| Cosmos DB with Gremlin API      | To store the knowledge graph     |
+| App Service Plan   | To host two applications: the front-end UI and the KG Search API respectively | App service plan is required for app deployment to Azure. When creating an app service plan select Linux as the OS. Refer to this [instruction](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure) for app deployment from [VS Code](https://code.visualstudio.com/). One can also follow the instruction below to run the apps locally for testing. To protect the KG search API one should add an authentication mechanism. For example, we configure API authentication to use Azure AD as the authentication provider, cf. the configuration guide [here](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically). 
+
+<!-- Below is the architecture used by this solution. Both App Services are running a Flask application. You can reuse/replace it based on your scenario. You can also add more components to the solution. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
+![img](docs/media/architecture.PNG) -->
+
+<!-- Provision the following Azure resources in your own subscription: 
 1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revisit this in the later step.)
 2. An Azure App Service to host the search APIs
 3. A cognitive search service to index the documents
@@ -86,59 +118,99 @@ gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
 ```
 
 You may first need to clone the repository to your machine if you did not.
-In Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link.
+In Visual Code, you can now continue the deploy step by following this [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can also choose other deployment methods like command line deployment in the same page of the previous link. -->
 
-### Prepare sample data
-We are using the Hugging Face [OHSUMED](https://huggingface.co/datasets/ohsumed) dataset to demo the end-2-end solution. It is a set of 348,566 references from MEDLINE, the on-line medical information database, consisting of titles and/or abstracts from 270 medical journals over a five-year period (1987-1991).
-For the knowledge graph, we simply create a small instance based on the Ontology described in [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together many health and biomedical vocabularies and standards to enable interoperability between computer systems.
-In this demo, a rule based NER will try to detect if there is any disease name mentioned in the search query. If yes, it will expand the search by adding its child and parrent classes into the rewritten query.
+## Getting Started
 
-![img](docs/media/sample_kg.PNG)
-
-1. Create Virtual Environment using venv or conda. The current solution is only tested in python 3.8. For example:
+1. Create a virtual environment. The solution accelerator is tested with python 3.8. 
 ```
 conda create -n kg-search python=3.8
 conda activate kg-search
 ```
 
-2. Navigate to the cloned repository and install python dependency:
+2. Clone the repo and install python dependencies:
 ```
+git clone https://github.com/microsoft/dstoolkit-kg-search.git
+cd dstoolkit-kg-search
 python -m pip install -r requirements.txt
 ```
 
-3. Create a .env file in root directory and fill in the value for the following properties:
+3. Prepare example medical data. We use the Hugging Face [OHSUMED](https://huggingface.co/datasets/ohsumed) dataset for the demo. It is a set of 348,564 references from MEDLINE, an online medical information database, consisting of titles, abstracts, and other metadata from 270 medical journals over a five-year period (1987-1991). Run the following command to download the OHSUMED dataset from the Hugging Face data repository, and extract entries from the dataset into separate JSON files for subsequent indexing:
 ```
-# Cosmos DB Configuration
-COSMOS_DB_SERVER=    # The address of the Cosmos DB server
-COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
-COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
-COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
+python scripts/prepare_data.py -o your_output_directory
 ```
 
-4. To initialize the sample KG, navigate to the script folder and run:
-```
-python initialize_graph.py
-```
+4. Upload the JSON files created in the previous step to a folder in an Azure Data Lake blob container, see an example below.
+![img](docs/media/blob_folder.PNG)
 
-5. Prepare the sample medical data set as JSON files:
-```
-python prepare_data.py -o [the output directory]
-```
-
-6. Upload the output files to the Blob storage you created before.
-
-7. Import the file "scripts/create_acs_index.postman_collection.json" into [Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) to create a Postman collection named "create_acs_index". The collection contains the following Azure Cognitive Search API calls that can be run in the following order to index the uploaded OHSUMED data:
-    * 1_create_datasource: Create a [data source](https://docs.microsoft.com/en-us/rest/api/searchservice/create-data-source) to connect to the OHSUMED data in the blob storage.
+5. Import the file "scripts/create_acs_index.postman_collection.json" into [Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) to create a Postman collection named "create_acs_index". The collection contains the following Azure Cognitive Search API calls that can be run in the following order to index the OHSUMED JSON files from the blob container:
+    * 1_create_datasource: Create a [data source](https://docs.microsoft.com/en-us/rest/api/searchservice/create-data-source) to connect to the OHSUMED data in the blob container.
     * 2_create_index: Define an [index](https://docs.microsoft.com/en-us/rest/api/searchservice/create-index) schema to host the data.
     * 3_create_indexer: Create [an indexer](https://docs.microsoft.com/en-us/rest/api/searchservice/create-indexer) to index the OHSUMED data to the defined index. 
 
-     Before running the collection, [edit the collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) in Postman based on your Azure service setup:![img](docs/media/postman_vars.png) Having configured the collection variables, you can [run the collection](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/#configuring-a-collection-run) in the order as shown below: ![img](docs/media/postman_run_collection.png) 
+     Before running the Postman collection, [edit the collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables) in Postman accordingly. Set ```datasource_name```, ```index_name```, and ```indexer_name``` based on your preferred naming choice. The rest of the variables should be set based on your Azure service setup. ![img](docs/media/postman_vars.png) 
+     
+     Having configured the collection variables, you can [run the collection](https://learning.postman.com/docs/running-collections/intro-to-collection-runs/#configuring-a-collection-run) in the order as shown below to start indexing the OHSUMED data.![img](docs/media/postman_run_collection.png) 
+
+    To review the indexing progress go to the Azure Cognitive Search Overview page on the Azure Portal. Upon successful completion of the indexing, the document count of your created index should reach 348,564:
+     ![img](docs/media/search_index.png) 
 
 
-### Run the demo
+6. Create an example KG in a Cosmos DB. First create a ```.env``` file in the root directory of the repository, and fill in the values for the following variables:
 
-Once you finish all the steps above, you can now browse the home page of the frontend application. Type in the search text "keratoconus treatment" and then click the search button, you should see the results listed in your page. You can try different search by switching the "KG Enabled" option on or off. Ideally, you will see more results returned when the "KG Enabled" is on since it will include the search results for those similar disease to keratoconus as well.  
-![img](docs/media/expansion.png)
+    ```
+    # Cosmos DB Configuration
+    COSMOS_DB_SERVER=    # The address of the Cosmos DB server, i.e., the Gremlin Endpoint
+    COSMOS_DB_DATABASE=  # The database you create in Cosmos DB
+    COSMOS_DB_GRAPH=     # The graph collection in the above database that stores the KG
+    COSMOS_DB_PASSWORD=  # The access key to the Cosmos DB
+    ```
+    Then run the following command to create a keratoconus knowledge graph according to the above configuration, cf. the ontology and knowledge graph introduced in the example search scenario discussion:
+    ```
+    python scripts/initialize_graph.py
+    ```
+
+7. Deploy the front-end UI and KG search API (both are Flask apps) locally or to Azure: 
+    
+    **Local deployment (for testing)**: 
+    * To deploy the apps locally, first edit the ```.env``` file created above for KG creation with the following additional variables: 
+
+        ```
+        # Azure Cognitive Search Configuration
+        ACS_ENDPOINT=       # The url of ACS endpoint 
+        ACS_API_KEY=        # The access key of ACS 
+        ACS_INDEX_NAME=     # The index name you want to use in ACS, e.g.ohsumed
+        ACS_API_VERSION=    # The API version of ACS, tested with 2021-04-30-Preview 
+
+        # Cosmos DB Configuration (same as used for KG creation above)
+        COSMOS_DB_SERVER=   # The address of the Cosmos DB server
+        COSMOS_DB_DATABASE= # The database you create in Cosmos DB
+        COSMOS_DB_GRAPH=    # The graph collection in the above database that stores the KG
+        COSMOS_DB_PASSWORD= # The access key to the Cosmos DB
+
+        # Search API Configuration
+        SEARCH_API_URL=     # The URL of the KG search API. In case of local development it should point to your local URL.
+        LOCAL_DEBUG=1       # Set local debug to 1 to bypass authentication
+
+        # Front-end UI Configuration
+        APP_SECRET_KEY=     # The secret key for front-end application to maintain cookies. It can be an arbitrary string. 
+        MAX_CONTENT_SIZE=200  # The content size setting used by the frontend application. Default to 200.
+        ```
+    * Run the following command under the ```api``` folder to activate the KG Search API. You can use any port number you want. This URL will be your SEARCH_API_URL in the ```.env``` file.
+
+        ```
+        flask run --host=0.0.0.0 --port=5000
+        ```
+    * Run the following command under the ```ui``` folder to start the front-end application.
+        ```
+        flask run --host=0.0.0.0 --port=5001
+        ```
+    * You can now visit the front-end application at http://127.0.0.1:5001. Type in a query such as "keratoconus treatment", then click the search button. You can toggle "KG Enabled" option on and off to compare the results with and without KG augmentation. You are likely to see more results with the "KG Enabled" option on if your query contains a disease term that is present in the example keratoconus KG. In that case the search is expanded from the original query to a query containing all the related diseases. 
+    ![img](docs/media/expansion.png)
+
+    **Azure deployment**: 
+
+
 
 ## Adapt the solution to your domain
 

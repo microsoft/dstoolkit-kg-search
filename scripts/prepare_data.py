@@ -51,6 +51,9 @@ def main():
     # Save each record as a JSON file in the specified output directory
     logging.info(f"[INFO] Saving each record as a JSON file")
     file_type = ".json"
+    # Create the output directory if it does not exist
+    if not os.path.exists(dir):
+        os.makedirs(dir)
     # The use of the tqdm function is optional. It's used to show the progress bar.
     for entry in tqdm(parsed):
         file_name = os.path.join(dir, entry["medline_ui"]+file_type)
