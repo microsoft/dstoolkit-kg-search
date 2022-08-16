@@ -157,7 +157,7 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
      ![img](docs/media/search_index.png) 
 
 
-6. Create a graph instance in a Cosmos DB. You can create a graph in Cosmos DB programmatically, or as shown below by using the Data Explorer tool in the Azure portal. Select **Data Explorer > New Graph**, provide a database ID, a graph ID, and set partition key to "/pk":
+6. Create a graph instance in the Cosmos DB. You can create a graph in Cosmos DB programmatically, or as shown below by using the Data Explorer tool in the Azure portal. Select **Data Explorer > New Graph**, provide a database ID, a graph ID, and set partition key to "/pk":
     ![img](docs/media/create_kg.png)
 
 7. Ingest the example KG to the above created graph instance in Cosmos DB. First create a `.env` file in the root directory of the repository, and fill in the values for the following variables (**Note**: `.env` is meant to be used in local mode. It is already added to the `.gitignore` file to avoid accidental commit of credentials to a repo):
@@ -213,13 +213,18 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
     * You can now visit the front-end application at http://127.0.0.1:5001. Type in a query such as "keratoconus treatment", then click the "Search" button to search. You can toggle "KG Enabled" option on and off to compare the results with and without KG augmentation. You are likely to see more results with the "KG Enabled" option on if your query contains a disease term that is present in the example keratoconus KG. In that case the search is expanded from the original query to a query containing all the related diseases. 
     ![img](docs/media/expansion.png)
 
-    **Azure deployment**: 
+    **Azure deployment** (WIP): 
+    1. Deploy the KG Search API. 
+    2. Configure the authentication for the KG search API.
+    3. Edit KG Search app settings 
+    4. Deploy front-end application
+    5. Edit front-end app settings 
 
 
 
-## Adapt the solution to your domain
+## Code Structure
 
-You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application by your own one. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
+<!-- You can reuse differnet parts of the code for your own application. The key component here is the search APIs. You can completely replace the frontend application by your own one. To adapt the search APIs to you specific scenario, you need to adjust the code accordingly. Below is the detailed breakdown of the search APIs. There are five main components:
 * Preprocessing: conduct any preprocessing logic of the search query, e.g., removing domain specific stop words.
 * NER: conduct NER to the preprocessed search text
 * Graph Query: take the NER result as input, retrieve the relevant entities from the KG
@@ -227,30 +232,29 @@ You can reuse differnet parts of the code for your own application. The key comp
 * Postprocessing: include any postprocessing logic here, e.g., user based filtering or re-ranking 
 ![img](docs/media/search_api.PNG)
 
-Every component has a base class defined. You can create your own class by inheriting the corresponding base class. The whole solution will work seamlessly if you follow the same API designed. 
+Every component has a base class defined. You can create your own class by inheriting the corresponding base class. The whole solution will work seamlessly if you follow the same API designed.  -->
 
-Here is the code structure of this solution.
 ```
-├───api     # folder containing all the search APIs components
+├───api              # folder containing the KG search API components
 │   ├───app.py       # the api web service
-│   └───search_expansion   # the search expansion component
-│       ├───kg   # extract relevant entities from KG
-|       ├───nerprocessing   # extract entities of interest from search text
-|       ├───postprocessing   # postprocess the ACS before sending back to frontend application
-|       ├───preprocessing    # preprocess the original search text
-|       ├───rewriting    # rewrite the original search text
+│   └───search_expansion    # the search expansion component
+│       ├───kg              # extract relevant entities from KG
+|       ├───nerprocessing   # extract entities of interest from search query
+|       ├───postprocessing  # postprocess the Azure Cognitive Search result before sending back to front-end application
+|       ├───preprocessing   # preprocess the original search query
+|       ├───rewriting       # rewrite the original search query
 |       ├───search_expander.py   # control the whole execution flow
-|       ├───search_sdk.py    # encapsulate the API for the underlying search engine
+|       ├───search_sdk.py   # encapsulate the API for the underlying search engine
 │       └───util.py
-├───config    # configuration for log or other non-credential settings
+├───config      # configuration for log or other non-credential settings
 ├───docs
-│   ├───media           # storing images, videos, etc, needed for docs.
-├───scripts           # scripts for preparing data
-├───tests           # unit tests
-|── ui       # the front-end application
+│   ├───media   # storing images, videos, etc, needed for docs.
+├───scripts     # scripts for preparing data
+├───tests       # unit tests
+|── ui          # the front-end application
 ├── .gitignore
 ├── README.md
-└── requirement.txt
+└── requirement.txt # Python dependencies
 ```
 ## Contributing
 
@@ -265,50 +269,6 @@ provided by the bot. You will only need to do this once across all repos using o
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-### Local Development
-
-The frontend and search APIs applications can be run locally. The source code is tested in python 3.8 only. Here are the steps to start the frontend and search APIs applications:
-1. Git clone the repository
-2. Create a virtual environment and install the dependency:
-```
-conda create -n kg-search python=3.8
-conda activate kg-search
-python -m pip install -r requirements.txt
-```
-3. Create a .env file in the root directory of the local repository and provide the values for the following properties:
-```
-# Azure Cognitive Configuration
-ACS_ENDPOINT= # The url of ACS endpoint 
-ACS_API_KEY= # The access key of the ACS 
-ACS_INDEX_NAME= # The index name you want to use in ACS, e.g., ohsumed
-ACS_API_VERSION= # The API version of ACS, we have tested on 2021-04-30-Preview only 
-
-# Cosmos DB Configuration
-COSMOS_DB_SERVER=    # The address of the Cosmos DB server
-COSMOS_DB_DATABASE=    # The database you create in Cosmos DB
-COSMOS_DB_GRAPH=     # The graph collection in the above database that actually stores the KG
-COSMOS_DB_PASSWORD=    # The access key to the Cosmos DB
-
-# Search API Configuration
-SEARCH_API_URL= # the URL of the search APIs App Service. In the local development case, it should point to your local url.
-LOCAL_DEBUG=1  # set local debug to be 1 to avoid any authentication setting.
-
-# Frontend Configuration
-APP_SECRET_KEY=  # The secret key for frontend application to maintain cookies. It can be arbitrary string. 
-MAX_CONTENT_SIZE=200  # The content size setting used by the frontend application. Set it as 200.
-```
-
-4. Run the following command under the api folder to start the search APIs flask application. You can use any port number you want.
-This url will be your SEARCH_API_URL in the .env file.
-```
-flask run --host=0.0.0.0 --port=5000
-```
-5. Run the following command under the ui folder to start the frontend flask application.
-```
-flask run --host=0.0.0.0 --port=5001
-```
-6. You can now visit the frontend application by the url http://127.0.0.1:5001 if you follow the same command above. 
 
 ## Trademarks
 
