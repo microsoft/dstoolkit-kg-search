@@ -218,7 +218,6 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
        
        After create the App Service, you can now deploy the source code by right-clicking your targeted App Service. Then choose "Deploy to Web App..." option. It will ask you to select the root folder of the source code. Simply select the root folder of this repository.
     ![image](https://user-images.githubusercontent.com/64599697/185061466-156858a2-170c-499b-8d4d-82fd3596e78b.png)
-
     
     2. Configure the authentication for the KG search API. To configure the authentication, go to KG Search API App Service in Azure Portal. Select "Autentication" and then click "Add identity provider".
     ![image](https://user-images.githubusercontent.com/64599697/185053685-1a51ba7f-5066-417e-930a-32dac314952a.png)
@@ -233,25 +232,26 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
     ![image](https://user-images.githubusercontent.com/64599697/185060539-7e9133c7-4583-4a46-a173-d6001f5f65a6.png)
     
        Apart from adding the environment varibles, you also need to tell which application this app service will run because this repository contains both the KG Search API and front-end applications. To do that, you need to configure the "Startup Command" for your application as bellow:
-    ```
-    gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
-    ```
-    ![image](https://user-images.githubusercontent.com/64599697/185064806-5073c0e3-7b28-408f-b4a3-ad93a935f3aa.png)
+       ```
+       gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
+       ```
+    ![image](https://user-images.githubusercontent.com/64599697/185177596-d145a19a-c3da-49a6-a88d-428b6e9e2dbf.png)
 
     4. Create client secret for the App registration. The App registration created in step 2 will be used to conduct Oauth 2.0 authentication by the front-end application. To achieve that, we need to first create the client secret for the App registration. Find the App registration you created in step 2 in your Active Directory, then click "New client secret" to create a secret. Don't forget to save the secret since it will be used in the configuration of the front-end app service later on.  
     ![image](https://user-images.githubusercontent.com/64599697/185065052-38c36d59-5014-46f3-95c3-536d0a3c2cad.png) 
     
-    5. Deploy front-end application. You can follow the same instructions in step 1 to create a new App Service and deploy the source code for the front-end application. 
+    5. Deploy front-end application. You can follow the same instructions in step 1 to create a new App Service and deploy the source code for the front-end application. Again, simply choose the root directory of the repository as the deployment target.
     
     6. Edit front-end app settings. Add the following environment variables in the front-end App Service.
     ![image](https://user-images.githubusercontent.com/64599697/185064376-265fa033-1669-416e-8304-04ce5652d307.png)  
        
-       After that, configure the "Startup Command" for the front-end application as bellow:
-    ```
-    gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
-    ```
-    
-    You can check if the deployment is successful by openning the home page of the front-end application.
+       After that, follow the instruction in step 3 to configure the "Startup Command" for the front-end application as bellow. 
+       ```
+       gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
+       ```
+ 
+       You can check if the deployment is successful by opening the home page of the front-end application. You can find the URL of the front-end in the overview page as below.
+       ![image](https://user-images.githubusercontent.com/64599697/185178618-32031711-8a35-48df-a3ce-c6d9de019ba1.png)
 
 ## Code Structure
 
