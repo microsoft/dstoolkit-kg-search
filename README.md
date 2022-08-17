@@ -169,10 +169,9 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
     COSMOS_DB_GRAPH=     # The graph collection in the above database that stores the KG
     COSMOS_DB_PASSWORD=  # The access key to the Cosmos DB
     ```
-    Then go to the `scripts` folder, and run the following command to create a keratoconus knowledge graph, cf. the ontology and knowledge graph introduced in the example search scenario discussion:
+    Then run the following command to create a keratoconus knowledge graph, cf. the ontology and knowledge graph introduced in the example search scenario discussion:
     ```
-    cd scripts
-    python initialize_graph.py
+    python scripts/initialize_graph.py
     ```
 
 7. Deploy the front-end UI and KG search API (both are Flask apps) locally or to Azure: 
@@ -213,14 +212,46 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
     * You can now visit the front-end application at http://127.0.0.1:5001. Type in a query such as "keratoconus treatment", then click the "Search" button to search. You can toggle "KG Enabled" option on and off to compare the results with and without KG augmentation. You are likely to see more results with the "KG Enabled" option on if your query contains a disease term that is present in the example keratoconus KG. In that case the search is expanded from the original query to a query containing all the related diseases. 
     ![img](docs/media/expansion.png)
 
-    **Azure deployment** (WIP): 
-    1. Deploy the KG Search API. 
-    2. Configure the authentication for the KG search API.
-    3. Edit KG Search app settings 
-    4. Deploy front-end application
-    5. Edit front-end app settings 
+    **Azure deployment**: 
+    1. Deploy the KG Search API. We recommend to use VS Code to deploy the App Service. You need to install [Azure Tools extension pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack) and sign into Azure from VS code. Once install the extension, select the Azure Tools icon. Then, right click on "App Services" and choose "Create New Web App.. (Advanced)". It will ask you to input the app service name, resource group, App Service Plan etc. Once you provide all the information, the app service will be automatically created and shown as a new item under "App Services". 
+    ![image](https://user-images.githubusercontent.com/64599697/185050594-aa09570a-c161-44ed-869d-662f86e8ac61.png)
+       
+       After create the App Service, you can now deploy the source code by right-clicking your targeted App Service. Then choose "Deploy to Web App..." option. It will ask you to select the root folder of the source code. Simply select the root folder of this repository.
+    ![image](https://user-images.githubusercontent.com/64599697/185061466-156858a2-170c-499b-8d4d-82fd3596e78b.png)
 
+    
+    2. Configure the authentication for the KG search API. To configure the authentication, go to KG Search API App Service in Azure Portal. Select "Autentication" and then click "Add identity provider".
+    ![image](https://user-images.githubusercontent.com/64599697/185053685-1a51ba7f-5066-417e-930a-32dac314952a.png)
+    
+       In the next page, select Microsoft as the identity provider, and provide the name of the App registration. Finally, click the add button at the bottom to finish the configuration. 
+    ![image](https://user-images.githubusercontent.com/64599697/185055242-f28c5798-3cad-432e-8f79-08f90967a88d.png)
+    
+       Once done, you will find an identity provider created. 
+    ![image](https://user-images.githubusercontent.com/64599697/185055982-274433bb-a712-465c-89ff-d74490ace6b9.png)
 
+    3. Edit KG Search API application settings. To let the KG Search API be able to access the underlying ACS and Cosmos DB, we need to add the connection properties as environment variables in the application settings.
+    ![image](https://user-images.githubusercontent.com/64599697/185060539-7e9133c7-4583-4a46-a173-d6001f5f65a6.png)
+    
+       Apart from adding the environment varibles, you also need to tell which application this app service will run because this repository contains both the KG Search API and front-end applications. To do that, you need to configure the "Startup Command" for your application as bellow:
+    ```
+    gunicorn --bind=0.0.0.0 --timeout 600 --chdir api app:app
+    ```
+    ![image](https://user-images.githubusercontent.com/64599697/185064806-5073c0e3-7b28-408f-b4a3-ad93a935f3aa.png)
+
+    4. Create client secret for the App registration. The App registration created in step 2 will be used to conduct Oauth 2.0 authentication by the front-end application. To achieve that, we need to first create the client secret for the App registration. Find the App registration you created in step 2 in your Active Directory, then click "New client secret" to create a secret. Don't forget to save the secret since it will be used in the configuration of the front-end app service later on.  
+    ![image](https://user-images.githubusercontent.com/64599697/185065052-38c36d59-5014-46f3-95c3-536d0a3c2cad.png) 
+    
+    5. Deploy front-end application. You can follow the same instructions in step 1 to create a new App Service and deploy the source code for the front-end application. 
+    
+    6. Edit front-end app settings. Add the following environment variables in the front-end App Service.
+    ![image](https://user-images.githubusercontent.com/64599697/185064376-265fa033-1669-416e-8304-04ce5652d307.png)  
+       
+       After that, configure the "Startup Command" for the front-end application as bellow:
+    ```
+    gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
+    ```
+    
+    You can check if the deployment is successful by openning the home page of the front-end application.
 
 ## Code Structure
 
