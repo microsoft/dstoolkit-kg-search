@@ -250,7 +250,7 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
        gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
        ```
  
-       You can check if the deployment is successful by opening the home page of the front-end application. You can find the URL of the front-end in the overview page as below.
+       To check the deployment, you can open the home page of the front-end application and search "keratoconus treatment". If there is result returned, that means your deployment is successful. You can find the URL of the front-end application in the overview page as below.
        ![image](https://user-images.githubusercontent.com/64599697/185178618-32031711-8a35-48df-a3ce-c6d9de019ba1.png)
 
 ## Code Structure
