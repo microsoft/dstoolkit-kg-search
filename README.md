@@ -1,6 +1,6 @@
-![image](https://user-images.githubusercontent.com/64599697/182273659-e65663e1-05a0-400d-9993-e2e3766c9567.png)
+![image](https://user-images.githubusercontent.com/64599697/185288661-6d7d823f-d244-41df-9ff9-4458a8887197.png)
 
-# Knowledge Graph Enabled Search Accelerator
+# Knowledge Graph Powered Search Accelerator
 
 This accelerator provides the code template to implement a domain-aware search solution that uses knowledge graph (KG) to enrich the organic results of a general purpose search engine. The use of the accelerator is demonstrated through an example implementation of a medical document retrieval solution. The example implementation uses a knowledge graph to expand the scope of search from the original query to semantically related queries to uncover documents that are relevant to the original query but may not contain the exact keywords. 
 
@@ -9,7 +9,7 @@ This accelerator provides the code template to implement a domain-aware search s
 <p align="center"><img src="docs/media/animation.gif"></p>
 
 
-<!-- This repo contains the core components for the Knowledge Graph Enabled Search solution.
+<!-- This repo contains the core components for the Knowledge Graph Powered Search solution.
 The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
 For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
 
@@ -26,7 +26,7 @@ Knowledge graph has been widely used to enhance search results by interpreting u
 The code template provided by this solution acceleration is applicable to both search refinement and search expansion scenarios.
 
 
-## An Example KG-Enabled Search Scenario
+## An Example KG-Powered Search Scenario
 
 To demonstrate the use of the solution accelerator this repo provides an example of using knowledge graph for search expansion in the context of medical document retrieval. 
 
@@ -42,7 +42,7 @@ This accelerator implements the following solution design consisting of 4 key co
 * **Front-End UI**: A front-end application to surface the final search results to the end users.
 * **Graph DB**: A graph database to host the knowledge graph. [Azure Cosmos DB with Gremlin API](https://docs.microsoft.com/en-us/azure/cosmos-db/graph/graph-introduction) is used in our implementation.
 * **Search Index**: A general purpose search engine to index and query the provided data. [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search) is used to index the data stored in the Azure Data Lake Storage (Gen 2) container.
-* **KG Search API**: An API that encapsulates the following workflow for KG-enabled search expansion/refinement:
+* **KG Search API**: An API that encapsulates the following workflow for KG-powered search expansion/refinement:
     
     1. **Preprocessing**: Preprocess the search query, e.g. remove domain-specific stop words.
     2. **NER**: Apply a Named Entity Recognition (NER) model to the preprocessed query to extract entities of interest. As NER is not the focus of this accelerator the example code uses a simple rule-based NER procedure. One can replace this simple implementation with an ML-based NER model to recognize domain-specific entities, e.g. by training a custom NER model using [Azure Cognitive Service for Language](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/overview). Refer to ```api/search_expansion/nerprocessing/ner.py``` for NER model input and output formats. 
