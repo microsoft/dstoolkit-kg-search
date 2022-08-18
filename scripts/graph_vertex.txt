@@ -1,10 +1,10 @@
 # Adding Vertex
-g.addV('disease').property('name', 'keratoconus').property('pk', 'keratoconus');
-g.addV('disease').property('name', 'protrusion').property('pk', 'protrusion');
-g.addV('disease').property('name', 'corneal disease').property('pk', 'corneal disease')
-g.addV('disease').property('name', 'corneal ectasia').property('pk', 'corneal ectasia')
-g.addV('disease').property('name', 'stable condition keratoconus').property('pk', 'stable condition keratoconus')
-g.addV('disease').property('name', 'acute hydrops keratoconus').property('pk', 'acute hydrops keratoconus')
-g.addV('pharmacological substance').property('name', 'griffonia').property('pk', 'griffonia')
-g.addV('therapeutic or preventive procedure').property('name', 'penetrating keratoplasty').property('pk', 'penetrating keratoplasty')
-g.addV('medical device').property('name', 'contact lens').property('pk', 'contact lens')
+g.addV('disease').property('name', 'keratoconus').property('pk', 'keratoconus').property('id', 'keratoconus')
+g.addV('disease').property('name', 'protrusion').property('pk', 'protrusion').property('id', 'protrusion')
+g.addV('disease').property('name', 'corneal disease').property('pk', 'corneal disease').property('id', 'corneal disease')
+g.addV('disease').property('name', 'corneal ectasia').property('pk', 'corneal ectasia').property('id', 'corneal ectasia')
+g.addV('disease').property('name', 'stable condition keratoconus').property('pk', 'stable condition keratoconus').property('id', 'stable condition keratoconus')
+g.addV('disease').property('name', 'acute hydrops keratoconus').property('pk', 'acute hydrops keratoconus').property('id', 'acute hydrops keratoconus')
+g.addV('pharmacological substance').property('name', 'griffonia').property('pk', 'griffonia').property('id', 'griffonia')
+g.addV('therapeutic or preventive procedure').property('name', 'penetrating keratoplasty').property('pk', 'penetrating keratoplasty').property('id', 'penetrating keratoplasty')
+g.addV('medical device').property('name', 'contact lens').property('pk', 'contact lens').property('id', 'contact lens')

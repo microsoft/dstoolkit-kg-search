@@ -186,7 +186,7 @@ class UMLSSearchExpander(SearchExpander):
             rewritten_query = search_text
             expanded = False
 
-        if expanded:
+        if expanded and parameters is not None:
             parameters['searchMode'] = 'any'
         
         logger.info(f"Rewrittern query: {rewritten_query}")
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     logger.info(f"Original query: {search_text}\n")
 
     start_time = time.time()
-    final_result = search_expander.expand(search_text)
+    final_result, code = search_expander.expand(search_text)
     logger.info(f"Final result: ")
 
     count = 0
