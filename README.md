@@ -1,6 +1,6 @@
-![image](https://user-images.githubusercontent.com/64599697/182273659-e65663e1-05a0-400d-9993-e2e3766c9567.png)
+![image](https://user-images.githubusercontent.com/64599697/185288661-6d7d823f-d244-41df-9ff9-4458a8887197.png)
 
-# Knowledge Graph Enabled Search Accelerator
+# Knowledge Graph Powered Search Accelerator
 
 This accelerator provides the code template to implement a domain-aware search solution that uses knowledge graph (KG) to enrich the organic results of a general purpose search engine. The use of the accelerator is demonstrated through an example implementation of a medical document retrieval solution. The example implementation uses a knowledge graph to expand the scope of search from the original query to semantically related queries to uncover documents that are relevant to the original query but may not contain the exact keywords. 
 
@@ -9,11 +9,6 @@ This accelerator provides the code template to implement a domain-aware search s
 <p align="center"><img src="docs/media/animation.gif"></p>
 
 
-<!-- This repo contains the core components for the Knowledge Graph Enabled Search solution.
-The solution is designed as a template that you can reuse the basic structure of the solution by overwriting its individual components based on the requirement of your application. 
-For example, you can ingest your own knowledge graph and implement your own query rewriting logic that tailored to your application.
-
-The solution can be generalized to different kind of industries. In this template, we use a sample knowledge graph and documents from medical domain to demonstrate the end-2-end solution.  -->
 
 ## Knowledge Graph to Enhance Search Results
 
@@ -26,7 +21,7 @@ Knowledge graph has been widely used to enhance search results by interpreting u
 The code template provided by this solution acceleration is applicable to both search refinement and search expansion scenarios.
 
 
-## An Example KG-Enabled Search Scenario
+## An Example KG-Powered Search Scenario
 
 To demonstrate the use of the solution accelerator this repo provides an example of using knowledge graph for search expansion in the context of medical document retrieval. 
 
@@ -42,7 +37,7 @@ This accelerator implements the following solution design consisting of 4 key co
 * **Front-End UI**: A front-end application to surface the final search results to the end users.
 * **Graph DB**: A graph database to host the knowledge graph. [Azure Cosmos DB with Gremlin API](https://docs.microsoft.com/en-us/azure/cosmos-db/graph/graph-introduction) is used in our implementation.
 * **Search Index**: A general purpose search engine to index and query the provided data. [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search) is used to index the data stored in the Azure Data Lake Storage (Gen 2) container.
-* **KG Search API**: An API that encapsulates the following workflow for KG-enabled search expansion/refinement:
+* **KG Search API**: An API that encapsulates the following workflow for KG-powered search expansion/refinement:
     
     1. **Preprocessing**: Preprocess the search query, e.g. remove domain-specific stop words.
     2. **NER**: Apply a Named Entity Recognition (NER) model to the preprocessed query to extract entities of interest. As NER is not the focus of this accelerator the example code uses a simple rule-based NER procedure. One can replace this simple implementation with an ML-based NER model to recognize domain-specific entities, e.g. by training a custom NER model using [Azure Cognitive Service for Language](https://docs.microsoft.com/en-us/azure/cognitive-services/language-service/custom-named-entity-recognition/overview). Refer to ```api/search_expansion/nerprocessing/ner.py``` for NER model input and output formats. 
@@ -62,10 +57,11 @@ You need to have an Azure subscription with the access to the following resource
 | Azure Data Lake Storage | To store the data   | Use [Azure Data Lake Storage Gen2](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction)
 | Azure Cognitive Search      | To index the data from the data lake   |
 | Azure Cosmos DB with Gremlin API      | To store the knowledge graph | Cosmos DB is a Labelled Property Graph (LPG) store
-| App Service Plan   | To host two applications: the front-end UI and the KG Search API, respectively | App service plan is required for app deployment to Azure. When creating an app service plan select Linux as the OS. Refer to this [instruction](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure) for app deployment from [VS Code](https://code.visualstudio.com/). One can also follow the instruction below to run the apps locally for testing. To protect the KG search API one should add an authentication mechanism. For example, we configure API authentication to use Azure AD as the authentication provider, cf. the configuration guide [here](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically). 
+| App Service Plan   | To host two applications: the front-end UI and the KG Search API, respectively | App service plan is required for app deployment to Azure. When creating an app service plan select Linux as the OS. 
 
-<!-- Below is the architecture used by this solution. Both App Services are running a Flask application. You can reuse/replace it based on your scenario. You can also add more components to the solution. For example, it is natural to adding tool like Azure Data Factory to orchestrate the data ingestion part.
-![img](docs/media/architecture.PNG) -->
+<!--Refer to this [instruction](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure) for app deployment from [VS Code](https://code.visualstudio.com/). One can also follow the instruction below to run the apps locally for testing. To protect the KG search API one should add an authentication mechanism. For example, we configure API authentication to use Azure AD as the authentication provider, cf. the configuration guide [here](https://docs.microsoft.com/en-us/azure/app-service/configure-authentication-provider-aad#--option-1-create-a-new-app-registration-automatically). -->
+
+
 
 <!-- Provision the following Azure resources in your own subscription: 
 1. An Azure App Service to host the frontend application (We recommend to create the App Service using VS Code: [following this link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python?tabs=flask%2Cwindows%2Cvscode-aztools%2Cvscode-deploy%2Cdeploy-instructions-azportal%2Cterminal-bash%2Cdeploy-instructions-zip-azcli#2---create-a-web-app-in-azure). You can skip the Deployment of the code first. We will revisit this in the later step.)
@@ -230,6 +226,20 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
 
     3. Edit KG Search API application settings. To let the KG Search API be able to access the underlying ACS and Cosmos DB, we need to add the connection properties as environment variables in the application settings.
     ![image](https://user-images.githubusercontent.com/64599697/185060539-7e9133c7-4583-4a46-a173-d6001f5f65a6.png)
+       Here is the description of the above enviroment variables:
+       ```
+       # Azure Cognitive Configuration
+       ACS_ENDPOINT # The url of ACS endpoint 
+       ACS_API_KEY # The access key of the ACS 
+       ACS_INDEX_NAME # The index name you want to use in ACS, e.g., ohsumed
+       ACS_API_VERSION # The API version of ACS, we have tested on 2021-04-30-Preview only 
+
+       # Cosmos DB Configuration
+       COSMOS_DB_SERVER # The address of the Cosmos DB server
+       COSMOS_DB_DATABASE # The database you create in Cosmos DB
+       COSMOS_DB_GRAPH # The graph collection in the above database that actually stores the KG
+       COSMOS_DB_PASSWORD # The access key to the Cosmos DB
+       ```
     
        Apart from adding the environment varibles, you also need to tell which application this app service will run because this repository contains both the KG Search API and front-end applications. To do that, you need to configure the "Startup Command" for your application as bellow:
        ```
@@ -244,8 +254,21 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
     
     6. Edit front-end app settings. Add the following environment variables in the front-end App Service.
     ![image](https://user-images.githubusercontent.com/64599697/185064376-265fa033-1669-416e-8304-04ce5652d307.png)  
+       Here is the description of the above enviroment variables:
+       ```
+       # Search API Secret
+       SEARCH_API_URL # the URL of the search APIs App Service.
+       SEARCH_AUTH_URL # the URL of the authentication provider, it should be https://login.microsoftonline.com/{tenant id}/oauth2/token if Azure AD login is configured
+       SEARCH_GRANT_TYPE # simply set it as client_credentials
+       SEARCH_CLIENT_ID # the client id when you registered in the identity provider for the search APIs App Service. 
+       SEARCH_CLIENT_SECRET # a client secret for the application you registered in the identity provider. Follow this https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret to create a client secret if you don't have.   
+
+       # Configuration for UI Application
+       APP_SECRET_KEY  # The secret key for frontend application to maintain cookies
+       MAX_CONTENT_SIZE  # The content size setting used by the frontend application. Set it as 200.  
+       ```
        
-       After that, follow the instruction in step 3 to configure the "Startup Command" for the front-end application as bellow. 
+       After that, follow the instructions in step 3 to configure the "Startup Command" for the front-end application as bellow. 
        ```
        gunicorn --bind=0.0.0.0 --timeout 600 --chdir ui app:app
        ```
