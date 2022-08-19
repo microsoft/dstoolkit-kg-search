@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Ignore enviroment variables
 .env
+
+# Ignore VS Code settings
+.vscode
