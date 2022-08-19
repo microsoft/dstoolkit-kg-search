@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "/subscriptions/0b3f04a9-6375-4341-a513-dd53731a99a4/microsoft.web/sites/subscriptions/0b3f04a9-6375-4341-a513-dd53731a99a4/resourceGroups/dstoolkit-kg-search/providers/Microsoft.Web/sites/appkgsearch",
-    "appService.deploySubpath": "."
-}
