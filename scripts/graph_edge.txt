@@ -1,0 +1,9 @@
+g.V().hasLabel('disease').has('name', 'stable condition keratoconus').addE('is subclass of').to(g.V().hasLabel('disease').has('name', 'keratoconus'))
+g.V().hasLabel('disease').has('name', 'acute hydrops keratoconus').addE('is subclass of').to(g.V().hasLabel('disease').has('name', 'keratoconus'))
+g.V().hasLabel('disease').has('name', 'keratoconus').addE('is subclass of').to(g.V().hasLabel('disease').has('name', 'protrusion'))
+g.V().hasLabel('disease').has('name', 'keratoconus').addE('is subclass of').to(g.V().hasLabel('disease').has('name', 'corneal disease'))
+g.V().hasLabel('disease').has('name', 'keratoconus').addE('is subclass of').to(g.V().hasLabel('disease').has('name', 'corneal ectasia'))
+
+g.V().hasLabel('pharmacological substance').has('name', 'griffonia').addE('treats').to(g.V().hasLabel('disease').has('name', 'keratoconus'))
+g.V().hasLabel('therapeutic or preventive procedure').has('name', 'penetrating keratoplasty').addE('treats').to(g.V().hasLabel('disease').has('name', 'keratoconus'))
+g.V().hasLabel('medical device').has('name', 'contact lens').addE('treats').to(g.V().hasLabel('disease').has('name', 'keratoconus'))

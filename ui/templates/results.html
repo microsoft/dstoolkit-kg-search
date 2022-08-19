@@ -1,0 +1,129 @@
+<!-- Templates -->
+<div class="container mt-4">
+
+    {% if search_count == 0 %}
+    <div class="row">
+        <div class="col">
+            <!-- Header Found -->
+            <h3>Nothing Found</h3>
+            <label>Don't worry this is a PoC, try again with other keywords</label>
+        </div>
+    </div>
+    <div class="row h-center mt-3 mb-5">
+        <div class="col">
+            <img src="../static/images/not_found_bear.png" class="img-fluid">
+        </div>
+    </div>
+
+    {% else %}
+    <div class="row">
+        <div class="col">
+            <!-- Header Found -->
+            <h3>Found <span style="color:rgb(226, 74, 36);">{{ search_count}}</span> Document{%if search_count>1%}s{%endif %}</h3>
+        </div>
+    </div>
+
+    <!-- Result Template -->
+    {% for result in results %}
+    <div class="row">
+        <div class="col">
+            <div class="alert alert-light my-3" role="alert">
+
+                <div class="row">
+                    <!-- LEFT: Preview File -->
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="row">
+                            <div class="col h-center">
+                                <a href="{{result['metadata_storage_path']}}" class="pointer" target="_blank">
+                                    <img src="../static/images/icon_pdf.png" class="img-fluid px-3 mt-4"
+                                        style="width: 200px;">
+                                    <p class="text-muted text-s mt-2 pointer" style="text-decoration: none;">Preview <i
+                                            class="fa fa-search" aria-hidden="true"></i></p>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4 mb-2 px-2">
+                            <div class="col">
+                                <strong>More Information</strong>
+                                <div>
+                                    <table>
+                                        <tr>
+                                            <td width="100">Author</td>
+                                            <td>{{', '.join(result['author'])}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Publication Type</td>
+                                            <td>{{result['publication_type']}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Source</td>
+                                            <td>{{ result['source'] }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Search Contents -->
+                    <div class="col-lg-9 col-md-9 col-sm-8">
+                        <!-- File Name -->
+                        <h3 class="my-3">{{result['metadata_storage_name']}}</h3>
+
+                        <div class="row">
+                            <div class="col">
+                                <strong>Title</strong>
+                                <div class="py-3">
+                                    <p style="margin: 0.1rem 0;">{{result['title']}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <strong>Abstract</strong>
+                                <div class="py-3">
+                                    <p style="margin: 0.1rem 0;">{{result['abstract']}}</p>
+                                </div>
+                            </div>
+                        </div>                    
+
+                        <!-- 1. Highlight Title -->
+                        <div class="row">
+                            <div class="col">
+                                <strong>Highlights</strong>
+                                <div class="py-3">
+                                    {% for highlight in result['@search.highlights']['title'] %}
+                                    <p style="margin: 0.1rem 0;">{{highlight |safe}}</p>
+                                    {% endfor %}
+                                    {% for phrase in result['@search.highlights']['abstract'] %}
+                                    <p style="margin: 0.1rem 0;">{{phrase |safe}}</p>
+                                    {% endfor %}
+                                    {% for term in result['@search.highlights']['mesh_terms'] %}
+                                    <p style="margin: 0.1rem 0;">{{term |safe}}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Footer -->
+<div class="container-fluid">
+    <div class="row mt-4 mb-3">
+        <div class="col h-center">
+            <small>&copy; 2022 Powered by Azure Cognitive Search</small>
+            <div class="h-center">
+                <img src="../static/images/azure-small.png" alt="Azure Logo Small" class="footer-logo mt-2 mb-1">
+            </div>
+        </div>
+    </div>
+</div>
