@@ -210,10 +210,10 @@ In Visual Code, you can now continue the deploy step by following this [link](ht
 
     **Azure deployment**: 
     1. Deploy the KG Search API. We recommend to use VS Code to deploy the App Service. You need to install [Azure Tools extension pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-node-azure-pack) and sign into Azure from VS code. Once install the extension, select the Azure Tools icon. Then, right click on "App Services" and choose "Create New Web App.. (Advanced)". It will ask you to input the app service name, resource group, App Service Plan etc. Once you provide all the information, the app service will be automatically created and shown as a new item under "App Services". 
-    ![image](https://user-images.githubusercontent.com/64599697/185050594-aa09570a-c161-44ed-869d-662f86e8ac61.png)
-       
+    ![image](https://user-images.githubusercontent.com/64599697/186061479-c37c5987-1737-4b70-87a2-a749beb92532.png)
+
        After create the App Service, you can now deploy the source code by right-clicking your targeted App Service. Then choose "Deploy to Web App..." option. It will ask you to select the root folder of the source code. Simply select the root folder of this repository.
-    ![image](https://user-images.githubusercontent.com/64599697/185061466-156858a2-170c-499b-8d4d-82fd3596e78b.png)
+    ![image](https://user-images.githubusercontent.com/64599697/186061672-d99efc56-0637-429a-995e-59b55b0514ef.png)
     
     2. Configure the authentication for the KG search API. To configure the authentication, go to KG Search API App Service in Azure Portal. Select "Autentication" and then click "Add identity provider".
     ![image](https://user-images.githubusercontent.com/64599697/185053685-1a51ba7f-5066-417e-930a-32dac314952a.png)
