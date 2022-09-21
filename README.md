@@ -23,7 +23,7 @@ The code template provided by this solution acceleration is applicable to both s
 
 ## An Example KG-Powered Search Scenario
 
-To demonstrate the use of the solution accelerator this repo provides an example of using knowledge graph for search expansion in the context of medical document retrieval. 
+To demonstrate the use of the solution accelerator, this repo provides an example of using knowledge graph for search expansion in the context of medical document retrieval. 
 
 An example knowledge graph is created based on [Unified Medical Language System (UMLS)](https://www.nlm.nih.gov/research/umls/index.html), which is a set of files and software that brings together health and biomedical vocabularies and standards to enable interoperability between computer systems. We create an example knowledge graph based on an [ontology](https://en.wikipedia.org/wiki/Ontology_(information_science)) as shown below to capture the relationships between various [keratoconus](https://www.hopkinsmedicine.org/health/conditions-and-diseases/keratoconus)-related diseases and their corresponding treatments. 
 ![img](docs/media/sample_kg.PNG)
