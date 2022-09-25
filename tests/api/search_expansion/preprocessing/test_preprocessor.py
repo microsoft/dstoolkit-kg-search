@@ -1,7 +1,7 @@
 import unittest
 import os
 import time
-from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
+from api.search_expansion.preprocessing.preprocessor import AircraftPreProcessor
 
 import logging
 logging.basicConfig()
@@ -14,7 +14,7 @@ class PreprocessorTest(unittest.TestCase):
         """Method called to prepare the test fixture.
         """
         
-        cls.preprocessor = UMLSPreProcessor()
+        cls.preprocessor = AircraftPreProcessor()
 
     @classmethod
     def tearDownClass(cls):

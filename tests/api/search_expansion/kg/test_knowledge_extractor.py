@@ -1,6 +1,6 @@
 import unittest
 import os
-from api.search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
+from api.search_expansion.kg.knowledge_extractor import AircraftKnowledgeExtractor
 from dotenv import load_dotenv
 import uuid
 import time
@@ -24,7 +24,7 @@ class KnowledgeExtractorTest(unittest.TestCase):
         config['graph'] = os.environ['COSMOS_DB_GRAPH']
         config['password'] = os.environ['COSMOS_DB_PASSWORD']
         
-        cls.extractor = UMLSKnowledgeExtractor(config)
+        cls.extractor = AircraftKnowledgeExtractor(config)
 
     @classmethod
     def tearDownClass(cls):

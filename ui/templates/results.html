@@ -34,7 +34,7 @@
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="row">
                             <div class="col h-center">
-                                <a href="{{result['metadata_storage_path']}}" class="pointer" target="_blank">
+                                <a href="{{result['metadata_storage_path']+sas_token}}" class="pointer" target="_blank">
                                     <img src="../static/images/icon_pdf.png" class="img-fluid px-3 mt-4"
                                         style="width: 200px;">
                                     <p class="text-muted text-s mt-2 pointer" style="text-decoration: none;">Preview <i
@@ -49,16 +49,12 @@
                                 <div>
                                     <table>
                                         <tr>
-                                            <td width="100">Author</td>
-                                            <td>{{', '.join(result['author'])}}</td>
+                                            <td width="100">Type</td>
+                                            <td>{{result['metadata_content_type']}}</td>
                                         </tr>
                                         <tr>
-                                            <td>Publication Type</td>
-                                            <td>{{result['publication_type']}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Source</td>
-                                            <td>{{ result['source'] }}</td>
+                                            <td>Creation Date</td>
+                                            <td>{{result['metadata_creation_date']}}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -69,7 +65,7 @@
                     <!-- RIGHT: Search Contents -->
                     <div class="col-lg-9 col-md-9 col-sm-8">
                         <!-- File Name -->
-                        <h3 class="my-3">{{result['metadata_storage_name']}}</h3>
+                        <!-- <h3 class="my-3">{{result['metadata_storage_name']}}</h3> -->
 
                         <div class="row">
                             <div class="col">
@@ -80,14 +76,14 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col">
-                                <strong>Abstract</strong>
+                                <strong>Content</strong>
                                 <div class="py-3">
-                                    <p style="margin: 0.1rem 0;">{{result['abstract']}}</p>
+                                    <p style="margin: 0.1rem 0;">{{result['content'][100]}}</p>
                                 </div>
                             </div>
-                        </div>                    
+                        </div>                     -->
 
                         <!-- 1. Highlight Title -->
                         <div class="row">
@@ -97,11 +93,11 @@
                                     {% for highlight in result['@search.highlights']['title'] %}
                                     <p style="margin: 0.1rem 0;">{{highlight |safe}}</p>
                                     {% endfor %}
-                                    {% for phrase in result['@search.highlights']['abstract'] %}
+                                    {% for phrase in result['@search.highlights']['content'] %}
                                     <p style="margin: 0.1rem 0;">{{phrase |safe}}</p>
                                     {% endfor %}
-                                    {% for term in result['@search.highlights']['mesh_terms'] %}
-                                    <p style="margin: 0.1rem 0;">{{term |safe}}</p>
+                                    {% for phrase in result['@search.highlights']['summary'] %}
+                                    <p style="margin: 0.1rem 0;">{{phrase |safe}}</p>
                                     {% endfor %}
                                 </div>
                             </div>

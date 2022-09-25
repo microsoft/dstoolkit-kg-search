@@ -35,7 +35,7 @@ class QueryRewriter:
         """
         return search_text
 
-class UMLSQueryRewriter(QueryRewriter):
+class AircraftQueryRewriter(QueryRewriter):
     
 
     def process_disease_name(self, disease_name):
@@ -280,7 +280,6 @@ class UMLSQueryRewriter(QueryRewriter):
             The rewritten query in string.
 
         """
-    
         
         if relevant_entities is None:
             logger.debug("No entity to expand. Dont rewrite.")
@@ -288,6 +287,10 @@ class UMLSQueryRewriter(QueryRewriter):
 
         # Start rewriting
         else:
+
+            return ("(\"WDM_CH21\"  \"WDM_CH21\") | (\"Service Bulletin 2015-05\" \"Service Bulletin 2015-05\") | "
+                "(\"MLOG_298607\" \"MLOG_298607\"  \"MLOG_298607\") | +(VH-ACX air conditioning cockpit blower on and off)")
+
             tokenized_text = self.tokenizing_search_text(search_text, ner_result)
 
             repeat_for_direct = len(relevant_entities) + 1

@@ -47,10 +47,10 @@ def search():
         "filter": "",
         # "facets": [],  
         # "select": "",
-        "highlight": "title, abstract, mesh_terms",
+        "highlight": "title, content, summary",
         "highlightPreTag": "<em class='highlight'>",
         "highlightPostTag": "</em>",
-        "searchMode": "all",  
+        "searchMode": "any",  
         "queryType": "simple",
         "skip": 0,
         "top": 50
@@ -75,7 +75,7 @@ def search():
         # search_count = 1
         
         return json.dumps({
-            'data': render_template('results.html', results=results, search_count=search_count)
+            'data': render_template('results.html', results=results, search_count=search_count, sas_token=os.environ["SAS_TOKEN"])
         })
     
     except Exception as e:
@@ -83,4 +83,4 @@ def search():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

@@ -29,6 +29,6 @@ class PostProcessor:
         return initial_results
 
 
-class UMLSPostProcessor(PostProcessor):
+class AircraftPostProcessor(PostProcessor):
 
     pass

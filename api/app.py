@@ -2,11 +2,11 @@ from datetime import datetime
 from flask import Flask, request
 import os
 import sys
-from api.search_expansion.search_expander import UMLSSearchExpander
+from api.search_expansion.search_expander import AircraftSearchExpander
 
 app = Flask(__name__)
 
-search_expander = UMLSSearchExpander()
+search_expander = AircraftSearchExpander()
 
 @app.route('/')
 def hello_world():
@@ -39,5 +39,5 @@ def search():
         return "Body is none", 400
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 

@@ -1,7 +1,7 @@
 import unittest
 import os
 import time
-from api.search_expansion.search_expander import UMLSSearchExpander
+from api.search_expansion.search_expander import AircraftSearchExpander
 
 import logging
 logging.basicConfig()
@@ -14,7 +14,7 @@ class SearchExpanderTest(unittest.TestCase):
         """Method called to prepare the test fixture.
         """
         
-        cls.search_expander = UMLSSearchExpander()
+        cls.search_expander = AircraftSearchExpander()
 
     @classmethod
     def tearDownClass(cls):

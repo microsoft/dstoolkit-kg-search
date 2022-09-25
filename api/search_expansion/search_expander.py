@@ -13,11 +13,11 @@ from dotenv import load_dotenv
 
 sys.path.append('../')
 
-from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
-from api.search_expansion.nerprocessing.ner import UMLSNer
-from api.search_expansion.kg.knowledge_extractor import UMLSKnowledgeExtractor
-from api.search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
-from api.search_expansion.postprocessing.postprocessor import UMLSPostProcessor
+from api.search_expansion.preprocessing.preprocessor import AircraftPreProcessor
+from api.search_expansion.nerprocessing.ner import AircraftNer
+from api.search_expansion.kg.knowledge_extractor import AircraftKnowledgeExtractor
+from api.search_expansion.rewriting.query_rewriter import AircraftQueryRewriter
+from api.search_expansion.postprocessing.postprocessor import AircraftPostProcessor
 from api.search_expansion.search_sdk import SearchSDK
 
 logging.basicConfig()
@@ -47,14 +47,14 @@ class SearchExpander:
         """
         pass
 
-class UMLSSearchExpander(SearchExpander):
+class AircraftSearchExpander(SearchExpander):
     
     def __init__(self):
         load_dotenv() 
         
         # Initialize the preprocessor
         self.preprocessor_config = {}
-        self.preprocessor = UMLSPreProcessor(self.preprocessor_config)
+        self.preprocessor = AircraftPreProcessor(self.preprocessor_config)
         
         # Initialize the NER processor
         self.ner_config = {}
@@ -62,7 +62,7 @@ class UMLSSearchExpander(SearchExpander):
             self.ner_config['endpoint'] = os.environ['NER_ENDPOINT']
         if 'NER_BEAR_TOKEN' in os.environ:
             self.ner_config['token'] = os.environ['NER_BEAR_TOKEN']
-        self.ner = UMLSNer(self.ner_config)
+        self.ner = AircraftNer(self.ner_config)
 
         # Initialize the knowledge extractor
         self.knowledge_extractor_config = {}
@@ -75,11 +75,11 @@ class UMLSSearchExpander(SearchExpander):
         if 'COSMOS_DB_PASSWORD' in os.environ:
             self.knowledge_extractor_config['password'] = os.environ['COSMOS_DB_PASSWORD']
 
-        self.knowledge_extractor = UMLSKnowledgeExtractor(self.knowledge_extractor_config)
+        self.knowledge_extractor = AircraftKnowledgeExtractor(self.knowledge_extractor_config)
 
         # Initialize the query rewriter
         self.rewriter_config = {}
-        self.rewriter = UMLSQueryRewriter(self.rewriter_config)
+        self.rewriter = AircraftQueryRewriter(self.rewriter_config)
 
         # Initialize the search engine configuration
         self.acs_config = {}
@@ -96,7 +96,7 @@ class UMLSSearchExpander(SearchExpander):
 
         # Initialize the postprocessor
         self.postprocessor_config = {}
-        self.postprocessor = UMLSPostProcessor(self.postprocessor_config)
+        self.postprocessor = AircraftPostProcessor(self.postprocessor_config)
 
 
     def search(self, search_text, parameters=None):
@@ -214,7 +214,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     search_text = args.search_text
-    search_expander = UMLSSearchExpander()
+    search_expander = AircraftSearchExpander()
 
     logger.info(f"Original query: {search_text}\n")
 

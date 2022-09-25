@@ -21,7 +21,7 @@ class PreProcessor:
         pass
 
 
-class UMLSPreProcessor(PreProcessor):
+class AircraftPreProcessor(PreProcessor):
 
     def preprocess(self, search_text, parameter=None):
         """Preprocess the search text before feed to subsequent steps.

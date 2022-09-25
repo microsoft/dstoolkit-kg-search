@@ -32,7 +32,7 @@ class Ner:
         return None
 
 
-class UMLSNer(Ner):
+class AircraftNer(Ner):
     
     def __init__(self, config):
         pass
@@ -54,46 +54,33 @@ class UMLSNer(Ner):
 
         ner_result = None
         
-        keratoconus_subclass1 = 'stable condition keratoconus'
-        match_1 = re.search(keratoconus_subclass1, processed_text)
+        aircraft_class = 'VH-ACX'
+        match_aircraft = re.search(aircraft_class, processed_text)
 
         tags = []
-        if match_1 is not None:
-            keratoconus_subclass1_tag = {
-                        "category": "Disease",
-                        "class": "Disease",
-                        "length": len(keratoconus_subclass1),
-                        "offset": match_1.start(),
-                        "text": keratoconus_subclass1
+        if match_aircraft is not None:
+            aircraft_tag = {
+                        "category": "Aircraft",
+                        "class": "Aircraft",
+                        "length": len(aircraft_class),
+                        "offset": match_aircraft.start(),
+                        "text": aircraft_class
                     }
-            tags.append(keratoconus_subclass1_tag)
+            tags.append(aircraft_tag)
 
-        keratoconus_subclass2 = 'acute hydrops keratoconus'
-        match_2 = re.search(keratoconus_subclass2, processed_text)
+        aircraft_system_class = 'air conditioning'
+        match_aircraft_system = re.search(aircraft_system_class, processed_text)
 
-        if match_2 is not None:
-            keratoconus_subclass2_tag = {
-                        "category": "Disease",
-                        "class": "Disease",
-                        "length": len(keratoconus_subclass2),
-                        "offset": match_2.start(),
-                        "text": keratoconus_subclass2
+        if match_aircraft_system is not None:
+            aircraft_system_tag = {
+                        "category": "Aircraft_System",
+                        "class": "Aircraft_System",
+                        "length": len(aircraft_system_class),
+                        "offset": match_aircraft_system.start(),
+                        "text": aircraft_system_class
                     }
-            tags.append(keratoconus_subclass2_tag)
+            tags.append(aircraft_system_tag)
             
-        if match_1 is None and match_2 is None:
-            keratoconus = 'keratoconus'
-            match = re.search(keratoconus, processed_text)
-
-            if match is not None:
-                keratoconus_tag = {
-                            "category": "Disease",
-                            "class": "Disease",
-                            "length": len(keratoconus),
-                            "offset": match.start(),
-                            "text": keratoconus
-                        }
-                tags.append(keratoconus_tag)
 
         if len(tags) > 0:
             ner_result = {

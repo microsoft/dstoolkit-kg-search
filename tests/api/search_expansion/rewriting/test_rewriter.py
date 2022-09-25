@@ -1,7 +1,7 @@
 import unittest
 import os
 import api.search_expansion.util as util
-from api.search_expansion.rewriting.query_rewriter import UMLSQueryRewriter
+from api.search_expansion.rewriting.query_rewriter import AircraftQueryRewriter
 
 import logging
 logging.basicConfig()
@@ -13,7 +13,7 @@ class RewriterTest(unittest.TestCase):
     def setUpClass(cls):
         """Method called to prepare the test fixture.
         """
-        cls.query_rewriter = UMLSQueryRewriter()
+        cls.query_rewriter = AircraftQueryRewriter()
 
     @classmethod
     def tearDownClass(cls):

@@ -1,7 +1,7 @@
 import unittest
 import os
-from api.search_expansion.nerprocessing.ner import UMLSNer
-from api.search_expansion.preprocessing.preprocessor import UMLSPreProcessor
+from api.search_expansion.nerprocessing.ner import AircraftNer
+from api.search_expansion.preprocessing.preprocessor import AircraftPreProcessor
 from dotenv import load_dotenv
 import uuid
 import time
@@ -23,7 +23,7 @@ class DemoNERTest(unittest.TestCase):
         config['endpoint'] = os.environ.get('NER_ENDPOINT', None)
         config['token'] = os.environ.get('NER_BEAR_TOKEN', None)
         
-        cls.ner = UMLSNer(config)
+        cls.ner = AircraftNer(config)
 
     @classmethod
     def tearDownClass(cls):
@@ -37,7 +37,7 @@ class DemoNERTest(unittest.TestCase):
         """
         search_text = 'treatment of stable condition keratoconus'
 
-        preprocessed_text = UMLSPreProcessor().preprocess(search_text)
+        preprocessed_text = AircraftPreProcessor().preprocess(search_text)
 
         ner_result = DemoNERTest.ner.extract_entities(preprocessed_text, search_text)
         
@@ -55,7 +55,7 @@ class DemoNERTest(unittest.TestCase):
 
         search_text = 'treatment of stable condition keratoconus and acute hydrops keratoconus'
 
-        preprocessed_text = UMLSPreProcessor().preprocess(search_text)
+        preprocessed_text = AircraftPreProcessor().preprocess(search_text)
 
         ner_result = DemoNERTest.ner.extract_entities(preprocessed_text, search_text)
         
@@ -80,7 +80,7 @@ class DemoNERTest(unittest.TestCase):
 
         search_text = 'treatment of keratoconus'
         
-        preprocessed_text = UMLSPreProcessor().preprocess(search_text)
+        preprocessed_text = AircraftPreProcessor().preprocess(search_text)
 
         ner_result = DemoNERTest.ner.extract_entities(preprocessed_text, search_text)
         

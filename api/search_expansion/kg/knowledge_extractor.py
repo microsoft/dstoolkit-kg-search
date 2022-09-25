@@ -31,93 +31,99 @@ class KnowledgeExtractor:
         """
         pass
 
-
-class UMLSKnowledgeExtractor(KnowledgeExtractor):
+class AircraftKnowledgeExtractor(KnowledgeExtractor):
     
     def __init__(self, config):
         self.config = config
 
-    def extract_hyponyms_disease(self, disease_name, query_api=util.QueryAPI.gremlin):
-        """Extract the child class diseases of the user specified one.
-
+    def extract_relevant_bulletin(self, aircraft_rego, aircraft_system_name, query_api=util.QueryAPI.gremlin):
+        """Extract the bulletin.
+        
         Note:
             Do not include the `self` parameter in the ``Args`` section.
 
         Args:
-            disease_name: the name of the candidate disease
+            aircraft_rego: the id of the aircraft.
+            aircraft_system_name: the sub-system in the aircraft.
             query_api: the API used for Cosmos DB. It could be Gremlin or SQL.
 
         Returns:
             The set of relevant entities in dictionary.
 
         """
-        query = f"g.V().haslabel('disease').has('name', '{disease_name}').in('is subclass of').values('name')"
+        # query = f"g.V().haslabel('disease').has('name', '{disease_name}').in('is subclass of').values('name')"
 
-        logger.debug(f"Gremlin Query: {query}")
+        # logger.debug(f"Gremlin Query: {query}")
     
-        results = self.client.execute_traversal(query)
+        # results = self.client.execute_traversal(query)
 
-        similar_diseases = []
+        # similar_diseases = []
 
-        # The result is returned in batch
-        for result in results:
-            similar_diseases.extend(result)
+        # # The result is returned in batch
+        # for result in results:
+        #     similar_diseases.extend(result)
 
-        # Remove duplication if any
-        similar_diseases = list(dict.fromkeys(similar_diseases))
+        # # Remove duplication if any
+        # similar_diseases = list(dict.fromkeys(similar_diseases))
 
-        return similar_diseases
+        relevant_bulletin = ['communique 2015-05']
 
-    def extract_hypernyms_disease(self, disease_name, query_api=util.QueryAPI.gremlin):
-        """Extract the parrent class disease of the user specified one.
+        return relevant_bulletin
+
+    def extract_relevant_maintenance_log(self, aircraft_rego, aircraft_system_name, query_api=util.QueryAPI.gremlin):
+        """Extract the maintenance log.
 
         Note:
             Do not include the `self` parameter in the ``Args`` section.
 
         Args:
-            disease_name: the name of the candidate disease
+            aircraft_rego: the id of the aircraft.
+            aircraft_system_name: the sub-system in the aircraft.
             query_api: the API used for Cosmos DB. It could be Gremlin or SQL.
 
         Returns:
             The set of relevant entities in dictionary.
 
         """
-        query = f"g.V().haslabel('disease').has('name', '{disease_name}').out('is subclass of').values('name')"
+        # query = f"g.V().haslabel('Aircraft').has('rego', '{aircraft_rego}').out('is subclass of').values('name')"
 
-        logger.debug(f"Gremlin Query: {query}")
+        # logger.debug(f"Gremlin Query: {query}")
     
-        results = self.client.execute_traversal(query)
+        # results = self.client.execute_traversal(query)
 
-        similar_diseases = []
+        # similar_diseases = []
 
-        # The result is returned in batch
-        for result in results:
-            similar_diseases.extend(result)
+        # # The result is returned in batch
+        # for result in results:
+        #     similar_diseases.extend(result)
 
-        # Remove duplication if any
-        similar_diseases = list(dict.fromkeys(similar_diseases))
+        # # Remove duplication if any
+        # similar_diseases = list(dict.fromkeys(similar_diseases))
 
-        return similar_diseases
+        relavant_maintenance_log = ['MLOG_298601']
 
-    def extract_similar_disease(self, disease_name, query_api=util.QueryAPI.gremlin):
-        """Extract similar the similar diseases of the user specified one.
+        return relavant_maintenance_log
+
+    def extract_relevant_log(self, aircraft_rego, aircraft_system_name, query_api=util.QueryAPI.gremlin):
+        """Extract relevant log for the corresponding aircraft and its sub system.
 
         Note:
             Do not include the `self` parameter in the ``Args`` section.
 
         Args:
-            disease_name: the name of the candidate disease
+            aircraft_rego: the id of the aircraft.
+            aircraft_system_name: the sub-system in the aircraft.
             query_api: the API used for Cosmos DB. It could be Gremlin or SQL.
 
         Returns:
             The set of relevant entities in dictionary.
 
         """
-
-        hyponyms = self.extract_hyponyms_disease(disease_name)
-        hypernyms = self.extract_hypernyms_disease(disease_name)
-
-        return [hyponyms, hypernyms]
+        
+        maintenance_log = self.extract_relevant_maintenance_log(aircraft_rego, aircraft_system_name)
+        bulletin = self.extract_relevant_bulletin(aircraft_rego, aircraft_system_name)
+        
+        return [maintenance_log, bulletin]
 
 
     def extract_relevant_entities(self, ner_result):
@@ -139,19 +145,19 @@ class UMLSKnowledgeExtractor(KnowledgeExtractor):
 
         self.client = CosmosDBClient(self.config)
         
-        disease_instance, disease_name = util.count_entities(ner_result)
+        aircraft_instance, aircraft_rego, aircraft_system_instance, aircraft_system_name = util.count_entities(ner_result)
 
         relevant_entities = {}
 
-        if disease_instance > 1:
-            logger.warn("Only one disease can be specified in the query. "
+        if aircraft_instance > 1 or aircraft_system_instance > 1:
+            logger.warn("Only one aircraft can be specified in the query. "
                         "Stop retrieving relevant entities.")
             return None  
 
-        elif disease_name is not None:
-            similar_diseases = self.extract_similar_disease(disease_name)
-            if similar_diseases is not None:
-                relevant_entities = similar_diseases
+        elif aircraft_rego is not None and aircraft_system_name is not None:
+            relevant_logs = self.extract_relevant_log(aircraft_rego, aircraft_system_name)
+            if relevant_logs is not None:
+                relevant_entities = relevant_logs
             else:
                 return None
 

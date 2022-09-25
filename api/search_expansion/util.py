@@ -16,16 +16,24 @@ def count_entities(ner_result):
     
     """
 
-    disease_class = 'Disease'
-    disease_instance = 0
-    disease_name = None
+    aircraft_class = 'Aircraft'
+    aircraft_instance = 0
+    aircraft_rego = None
+
+    aircraft_system_class = 'Aircraft_System'
+    aircraft_system_instance = 0
+    aircraft_system_name = None    
 
     if ner_result is None:
-        return disease_instance, disease_name
+        return aircraft_instance, aircraft_rego, aircraft_system_instance, aircraft_system_name
 
     for entity in ner_result['tags']:
-        if entity['class'] == disease_class:
-            disease_instance += 1
-            disease_name = entity['text']
+        if entity['class'] == aircraft_class:
+            aircraft_instance += 1
+            aircraft_rego = entity['text']
 
-    return disease_instance, disease_name
+        if entity['class'] == aircraft_system_class:
+            aircraft_system_instance += 1
+            aircraft_system_name = entity['text']
+
+    return aircraft_instance, aircraft_rego, aircraft_system_instance, aircraft_system_name
