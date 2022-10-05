@@ -10,6 +10,10 @@ This accelerator provides the code template to implement a domain-aware search s
 
 
 
+
+https://user-images.githubusercontent.com/64599697/193975237-faa5b810-3c8d-4836-8fd3-3a9585728049.mp4
+
+
 ## Knowledge Graph to Enhance Search Results
 
 Knowledge graph has been widely used to enhance search results by interpreting user intent based on semantic meaning of search terms. It is commonly applied to the following two search enhancement scenarios:
