@@ -31,11 +31,10 @@ In a medical document retrieval scenario, parent (hypernym) and children (hypony
 
 ## Extensible to Other Industries 
 
-In fact, this solution accelartor is applicable to all other industries. Below is an exmaple scenario explained in aviation industry for your interest. 
+This solution accelerator can be customized to other search scenarios from different industries. The vision demonstrator below illustrates how a KG-powered search solution can be used to support aircraft maintenance.  
 
 https://user-images.githubusercontent.com/64599697/193975237-faa5b810-3c8d-4836-8fd3-3a9585728049.mp4
 
-(Coeus is just another branding of this accelerator.)
 
 # Solution Design
 
