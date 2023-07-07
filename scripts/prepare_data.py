@@ -23,7 +23,7 @@ ap.add_argument("-o", "--dir", required=True,
 
 args, _ = ap.parse_known_args()
 args = vars(args)
-dir = args["dir"]
+directory = args["dir"]
 
 logging.info(f"[INFO] Input arguments{args}")
 
@@ -34,7 +34,7 @@ def main():
     # The combined train and test dataset (348,564 records) will be used for indexing.
     logging.info(f"[INFO] Checking folder name")
     try:
-        assert dir != "ohsumed"
+        assert directory != "ohsumed"
     except:
         raise Exception("target folder should not be called ohsumed, please chose another value.")
     
@@ -62,11 +62,11 @@ def main():
     logging.info(f"[INFO] Saving each record as a JSON file")
     file_type = ".json"
     # Create the output directory if it does not exist
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     # The use of the tqdm function is optional. It's used to show the progress bar.
     for entry in tqdm(parsed):
-        file_name = os.path.join(dir, entry["medline_ui"]+file_type)
+        file_name = os.path.join(directory, entry["medline_ui"]+file_type)
         with open(file_name, 'w') as f:
             json.dump(entry, f)
 
