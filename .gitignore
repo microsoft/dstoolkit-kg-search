@@ -354,3 +354,6 @@ MigrationBackup/
 
 # Ignore VS Code settings
 .vscode
+
+# Ignore downloaded data
+data/
