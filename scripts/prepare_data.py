@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 # Read the command line arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-o", "--dir", required=True,
-                help='Output directory')
+                help='Output directory where data will be stored. It does not necessarily have to exist on disk. This field can have any value except "ohsumed')
 
 args, _ = ap.parse_known_args()
 args = vars(args)
@@ -32,6 +32,16 @@ def main():
     # Download the dataset from the HuggingFace repository,
     # see https://huggingface.co/datasets/ohsumed for more details on the dataset.
     # The combined train and test dataset (348,564 records) will be used for indexing.
+    logging.info(f"[INFO] Checking folder name")
+    try:
+        assert dir != "ohsumed"
+    except:
+        raise Exception("target folder should not be called ohsumed, please chose another value.")
+    
+    # check if the directory "ohsumed" exists or not
+    if os.path.exists("ohsumed"):
+        raise Exception("A folder named 'ohsumed' has been detected. Please delete or rename the ohsumed folder, or run the script from a different root directory.")
+    
     logging.info(f"[INFO] Loading the dataset")
     ohsumed_dataset = load_dataset("ohsumed", split='train+test')
 
